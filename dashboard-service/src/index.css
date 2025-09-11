@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/* Paperlogy 전 가중치 매핑 */
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-1Thin.ttf') format('truetype');
+    font-weight: 100; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
+    font-weight: 200; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-3Light.ttf') format('truetype');
+    font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-4Regular.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-5Medium.ttf') format('truetype');
+    font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-6SemiBold.ttf') format('truetype');
+    font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-7Bold.ttf') format('truetype');
+    font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-8ExtraBold.ttf') format('truetype');
+    font-weight: 800; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Paperlogy';
+    src: url('./assets/fonts/Paperlogy-9Black.ttf') format('truetype');
+    font-weight: 900; font-style: normal; font-display: swap;
+}
+
+/* 기본 폰트로 적용 */
+:root { --font-sans: 'Paperlogy', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; }
+body { font-family: var(--font-sans); }
+
+/* 커스텀 스크롤바 유틸 */
+@layer utilities {
+    .sb-ghost {
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
+    }
+    .sb-ghost::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    .sb-ghost::-webkit-scrollbar-track { background: transparent; }
+
+    .sb-ghost-idle { scrollbar-color: transparent transparent; }
+    .sb-ghost-idle::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 9999px;
+        border: 3px solid transparent;
+        background-clip: content-box;
+    }
+
+    .sb-ghost-active { scrollbar-color: #cbd5e1 transparent; }
+    .sb-ghost-active::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 9999px;
+        border: 3px solid transparent;
+        background-clip: content-box;
+    }
+}
