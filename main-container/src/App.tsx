@@ -5,6 +5,7 @@ import { CircularProgress } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const NavigationBarApp = React.lazy(() => import("navigationBarApp/App"));
+const AuthenticationApp = React.lazy(() => import("authenticationApp/App"));
 
 const App = () => {
     return (
@@ -20,6 +21,7 @@ const App = () => {
                 <main>
                     <Routes>
                         <Route path="/" element={<div>Home Page</div>} />
+                        <Route path="/authentication/*" element={<AuthenticationApp />} />
                     </Routes>
                 </main>
             </div>

@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "main-container",
-    "navigation-bar-app"
+    "navigation-bar-app",
+    "authentication-app"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",

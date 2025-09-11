@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "packages:": [
     "main-container",
-    "navigation-bar-app"
+    "navigation-bar-app",
+    "authentication-app"
   ],
   "hoist": true
 }

@@ -161,3 +161,4 @@ sketch
 
 # exclude @mf-types
 @mf-types/
+**/@mf-types/
