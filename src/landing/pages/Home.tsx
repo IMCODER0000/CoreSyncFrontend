@@ -1,8 +1,15 @@
 
 
 import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { Button, Badge } from '../../common_ui';
 const Home = () => {
+    const navigate = useNavigate();
+    const handleClick = () =>{
+        navigate("/ui-components");
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center">
             <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between max-w-6xl">
@@ -42,22 +49,23 @@ const Home = () => {
                     </div>
 
                     <div className="space-y-4 w-full max-w-xs mx-auto md:mx-0">
-                        <button className="w-full py-3.5 px-6 text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 transition duration-300 font-medium text-lg shadow-sm">
+                        <Button variant="outline" color="primary" fullWidth className="shadow-sm">
                             서비스 알아보기
-                        </button>
-                        <button className="w-full py-3.5 px-6 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition duration-300 font-medium text-lg shadow-md">
+                        </Button>
+                        <Button variant="filled" color="primary" fullWidth className="shadow-md">
                             시작하기
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="mt-10 text-sm text-gray-600 w-full max-w-xs mx-auto md:mx-0 text-center ">
-                        사용법이 궁금하다면? <span className="text-blue-500 font-medium hover:underline cursor-pointer">튜토리얼</span>
+                        사용법이 궁금하다면? <Link to="/ui-components" className="text-blue-500 font-medium hover:underline cursor-pointer">서비스 살펴보기</Link>
+                        <Badge color="primary" variant="soft" size="sm" className="ml-2">New</Badge>
                     </div>
                 </motion.div>
             </div>
             
             <div className="fixed bottom-8 right-8">
-                <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg hover:bg-blue-600 transition-colors duration-300 cursor-pointer">
+                <div onClick={handleClick} className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg hover:bg-blue-600 transition-colors duration-300 cursor-pointer">
                     D
                 </div>
             </div>
