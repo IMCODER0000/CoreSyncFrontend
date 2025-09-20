@@ -1,5 +1,4 @@
 
-
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -7,7 +6,7 @@ import { Button, Badge } from '../../common_ui';
 const Home = () => {
     const navigate = useNavigate();
     const handleClick = () =>{
-        navigate("/ui-components");
+        navigate("/workspace");
     }
 
     return (
@@ -37,7 +36,7 @@ const Home = () => {
                 >
                     <div className="flex items-center mb-8">
                         <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg">D</div>
-                        <h1 className="text-4xl font-bold ml-3 text-gray-800">애자일론머스크</h1>
+                        <h1 className="text-4xl font-bold ml-3 text-gray-800">애자일론머스킁</h1>
                     </div>
 
                     <h2 className="text-2xl font-bold mb-5 text-gray-800">"IT관리의 마침표, 애자일론머스크"</h2>
@@ -52,9 +51,11 @@ const Home = () => {
                         <Button variant="outline" color="primary" fullWidth className="shadow-sm">
                             서비스 알아보기
                         </Button>
-                        <Button variant="filled" color="primary" fullWidth className="shadow-md">
-                            시작하기
-                        </Button>
+                        <Link to="/workspace" className="w-full">
+                            <Button variant="filled" color="primary" fullWidth className="shadow-md">
+                                근태 관리 시작하기
+                            </Button>
+                        </Link>
                     </div>
 
                     <div className="mt-10 text-sm text-gray-600 w-full max-w-xs mx-auto md:mx-0 text-center ">

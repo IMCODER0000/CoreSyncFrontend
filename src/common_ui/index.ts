@@ -14,3 +14,6 @@ export type { CardProps, CardVariant, CardSize } from './Card';
 export { default as Badge } from './Badge';
 export type { BadgeProps, BadgeColor, BadgeVariant, BadgeSize, BadgeRounded } from './Badge';
 
+// 레이아웃 컴포넌트 내보내기
+export { MainLayout, SidebarLayout, Sidebar } from './layout';
+
