@@ -18,7 +18,7 @@ const ExamplePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <>
       <h1 className="text-3xl font-bold mb-8">Common UI 컴포넌트 예제</h1>
 
       <section className="mb-12">
@@ -235,7 +235,7 @@ const ExamplePage: React.FC = () => {
           </Card.Footer>
         </Card>
       </section>
-    </div>
+    </>
   );
 };
 
