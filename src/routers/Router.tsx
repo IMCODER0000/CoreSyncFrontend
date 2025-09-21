@@ -10,6 +10,7 @@ const ComponentExamples = lazy(() => import("../common_ui/examples/ExamplePage.t
 const Workspace = lazy(() => import("../workspace/pages/Workspace.tsx"));
 // Profile 컴포넌트 임포트 (기본 내보내기가 있는지 확인 필요)
 const Profile = lazy(() => import("../profile/pages/Profile.tsx"));
+const Meeting = lazy(() => import("../meeting/pages/CalendarPage.tsx"));
 
 function AppRouter() {
     return (
@@ -18,7 +19,8 @@ function AppRouter() {
                 <Routes>
 
                     <Route path="/" element={<Home/>}/>
-                    
+                    <Route path="/meeting" element={<Meeting/>}/>
+
                     <Route element={<SidebarLayout />}>
                         <Route path="/workspace" element={
                             <MainLayout>
@@ -30,9 +32,9 @@ function AppRouter() {
                                 <ComponentExamples/>
                             </MainLayout>
                         }/>
-                        
+
                         <Route path="/profile" element={
-                                <Profile/>
+                            <Profile/>
                         }/>
                     </Route>
                 </Routes>
