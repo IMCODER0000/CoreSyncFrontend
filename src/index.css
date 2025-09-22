@@ -1,0 +1,11 @@
+@import url('https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.1/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css');
+
+/* 전역 기본 폰트 지정 */
+:root{
+    --font-fallback: system-ui, -apple-system, "Segoe UI", Roboto,
+    "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
+    "Helvetica Neue", Arial, sans-serif;
+}
+html {
+    font-family: "Wanted Sans Variable", var(--font-fallback);
+}
