@@ -19,7 +19,6 @@ function AppRouter() {
                 <Routes>
 
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/meeting/*" element={<Meeting/>}/>
 
                     <Route element={<SidebarLayout />}>
                         <Route path="/workspace" element={
@@ -35,6 +34,10 @@ function AppRouter() {
 
                         <Route path="/profile" element={
                             <Profile/>
+                        }/>
+
+                        <Route path="/meeting/*" element={
+                            <Meeting/>
                         }/>
                     </Route>
                 </Routes>
