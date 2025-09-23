@@ -21,8 +21,7 @@ export default function CalendarPage() {
     const panelW = 360;
     const [mode, setMode] = React.useState<"week" | "month">("month");
 
-    // [NEW] 모달 전환 임계폭: 기존 1280 → 1100 (더 작았을 때 모달로 전환)
-    const OVERLAY_BREAKPOINT = 1100; // [NEW]
+    const OVERLAY_BREAKPOINT = 1100;
 
     // 1100px 미만이면 DayPanel을 모달(overlay)로 전환
     const [overlay, setOverlay] = React.useState(false);
@@ -30,8 +29,7 @@ export default function CalendarPage() {
 
     React.useEffect(() => {
         const onResize = () => {
-            // [CHANGED] 1280 대신 OVERLAY_BREAKPOINT 사용
-            const isOverlay = window.innerWidth < OVERLAY_BREAKPOINT; // [CHANGED]
+            const isOverlay = window.innerWidth < OVERLAY_BREAKPOINT;
             setOverlay(isOverlay);
             setPanelOpen(false); // 폭 바뀔 때 자동 오픈 금지
         };

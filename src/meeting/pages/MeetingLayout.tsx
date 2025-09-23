@@ -1,4 +1,4 @@
-import {NavLink, Outlet} from "react-router-dom";
+import {NavLink, Outlet, useNavigate} from "react-router-dom";
 
 // 탭 아이콘
 function TabIcon({label}: { label: string }) {
@@ -54,9 +54,16 @@ function Tab({to, label}: { to: string; label: string }) {
     );
 }
 
-export function MeetingSubnav() { // [NEW]
+export function MeetingSubnav({ onNewMeeting }: { onNewMeeting?: () => void }) {
+
+    const navigate = useNavigate();
+    const handleNew = () => {
+        if (onNewMeeting) return onNewMeeting();
+        navigate("/meeting/new");
+    };
+
     return (
-        <div className="px-6 pt-3 pb-1 border-b border-[#EEF1F5] bg-white rounded-xl">
+        <div className="px-6 pt-3 pb-1 border-b border-[#EEF1F5] bg-white">
             <div className="flex items-center justify-between gap-4">
                 <div className="flex items-end gap-3">
                     <Tab to="../calendar" label="Calendar" />
@@ -80,6 +87,7 @@ export function MeetingSubnav() { // [NEW]
                         type="button"
                         className="h-8 px-3 rounded-lg bg-[#6D6CF8] text-white text-[12px] hover:brightness-105 flex items-center gap-2"
                         aria-label="New Meeting"
+                        onClick={handleNew}
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
                             <circle cx="12" cy="12" r="8" fill="white" opacity="0.95"/>
