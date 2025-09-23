@@ -1,6 +1,8 @@
 import {Routes, Route, Navigate} from "react-router-dom";
 import CalendarPage from "../pages/CalendarPage.tsx";
 import ListPage from "../pages/ListPage.tsx";
+import MeetingDetailPage from "../pages/MeetingDetailPage.tsx";
+import NewMeetingPage from "../pages/NewMeetingPage.tsx";
 
 export default function AppRoutes() {
     return (
@@ -8,6 +10,11 @@ export default function AppRoutes() {
             <Route index element={<Navigate to="calendar" replace />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="list" element={<ListPage />} />
+            <Route path="new" element={<NewMeetingPage />} />
+
+            <Route path="detail/:id" element={<MeetingDetailPage />} />
+            {/* [NEW] 디버그용 NoMatch — 현재 경로 확인 */}
+            <Route path="*" element={<div style={{padding:16}}>NoMatch in /meeting/* — 경로를 확인하세요.</div>} />
         </Routes>
     );
 }
