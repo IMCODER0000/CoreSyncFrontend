@@ -1,34 +1,14 @@
 import TemplatePanel from "./TemplatePanel";
 import {useState} from "react";
 import MarkdownEditor from "./MarkdownEditor.tsx";
-import NotionEditor from "./NotionEditor";
-
-function ChevronDown({ open }: { open: boolean }) {
-    return (
-        <svg
-            width="16"
-            height="16"
-            viewBox="0 0 20 20"
-            className={`transition-transform ${open ? "rotate-180" : ""}`}
-            fill="currentColor"
-            aria-hidden
-        >
-            <path
-                fillRule="evenodd"
-                d="M5.22 7.22a.75.75 0 0 1 1.06 0L10 10.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.28a.75.75 0 0 1 0-1.06Z"
-                clipRule="evenodd"
-            />
-        </svg>
-    );
-}
+import Link from "./Link.tsx";
+import TabletBoard from "./TabletBoard.tsx";
 
 type Props = {
     title: string;
     setTitle: (v: string) => void;
-
     notes: string;
     setNotes: (v: string) => void;
-
     links: string[];
     setLinks: (v: string[]) => void;
     linkOpen: boolean;
@@ -71,95 +51,31 @@ export default function Content({
                 />
             </div>
 
-            {/* 링크 섹션 */}
-            <div className="pt-1">
-                <div className="flex h-5 items-center gap-2 text-sm">
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 rounded-sm px-1.5 py-1 hover:bg-slate-300/30"
-                        onClick={() => setLinkOpen(!linkOpen)}
-                    >
-                        <ChevronDown open={linkOpen} />
-                        <div className="font-medium text-[#6B7280]">링크</div>
-                        <div className="text-xs text-[#9CA3AF]">{links.length}</div>
-                    </button>
-                    <button
-                        type="button"
-                        className="h-5 w-5 inline-flex items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6] hover:bg-[#E5E7EB]"
-                        onClick={() => setLinkOpen(true)}
-                        title="링크 추가"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                        </svg>
-                    </button>
-                </div>
-
-                {linkOpen && (
-                    <div className="mt-3">
-                        <div className="flex items-center gap-2">
-                            <input
-                                className="flex-1 h-10 px-3 rounded-md border"
-                                placeholder="URL 붙여넣기"
-                                value={linkInput}
-                                onChange={(e) => setLinkInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" && linkInput.trim()) {
-                                        setLinks([linkInput.trim(), ...links]);
-                                        setLinkInput("");
-                                    }
-                                }}
-                            />
-                            <button
-                                className="h-10 px-3 rounded-md border"
-                                onClick={() => {
-                                    const v = linkInput.trim();
-                                    if (!v) return;
-                                    setLinks([v, ...links]);
-                                    setLinkInput("");
-                                }}
-                            >
-                                추가
-                            </button>
-                        </div>
-
-                        {!!links.length && (
-                            <ul className="mt-2 space-y-1 text-sm">
-                                {links.map((u: string, i: number) => (
-                                    <li key={`${u}-${i}`} className="flex items-center justify-between gap-2">
-                                        <a href={u} target="_blank" rel="noreferrer" className="underline truncate">
-                                            {u}
-                                        </a>
-                                        <button
-                                            className="text-xs underline text-[#6B7280]"
-                                            onClick={() => setLinks(links.filter((_, idx) => idx !== i))}
-                                        >
-                                            삭제
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* 노트(노션 느낌) */}
-            <NotionEditor
-                value={notes}
-                onChange={setNotes}
-                placeholder="빈 화면에 바로 작성하세요.  / 로 명령을 열 수 있어요"
+            {/* 링크 */}
+            <Link
+                links={links} setLinks={setLinks}
+                linkOpen={linkOpen} setLinkOpen={setLinkOpen}
+                linkInput={linkInput} setLinkInput={setLinkInput}
             />
 
+            {/*/!* 노트(노션 느낌) *!/*/}
+            {/*<NotionLikeEditor*/}
+            {/*    value={notes}*/}
+            {/*    onChange={setNotes}*/}
+            {/*    placeholder="빈 화면에 바로 작성하세요.  / 로 명령을 열 수 있어요"*/}
+            {/*/>*/}
 
-            {/*/!* 노트 (마크다운) *!/*/}
-            {/*<div>*/}
-            {/*    <MarkdownEditor*/}
-            {/*        value={notes}*/}
-            {/*        onChange={setNotes}*/}
-            {/*        placeholder="빈 화면에 바로 작성하세요. (# 제목, - 목록, **굵게** 등)"*/}
-            {/*    />*/}
-            {/*</div>*/}
+
+            {/* 노트 (마크다운) */}
+            <div>
+                <MarkdownEditor
+                    value={notes}
+                    onChange={setNotes}
+                    placeholder="빈 화면에 바로 작성하세요. (# 제목, - 목록, **굵게** 등)"
+                />
+            </div>
+
+            <TabletBoard participantsStr={participants} />
 
             {/* 템플릿 */}
             <div className="rounded border border-[#E5E7EB] bg-white pb-2">
