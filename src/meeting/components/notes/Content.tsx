@@ -2,7 +2,7 @@ import TemplatePanel from "./TemplatePanel";
 import {useState} from "react";
 import MarkdownEditor from "./MarkdownEditor.tsx";
 import Link from "./Link.tsx";
-import TabletBoard from "./TabletBoard.tsx";
+import BoardsPanel from "./BoardsPanel.tsx";
 
 type Props = {
     title: string;
@@ -13,8 +13,8 @@ type Props = {
     setLinks: (v: string[]) => void;
     linkOpen: boolean;
     setLinkOpen: (v: boolean) => void;
-    linkInput: string;
-    setLinkInput: (v: string) => void;
+    // linkInput: string;
+    // setLinkInput: (v: string) => void;
 
     participants: string;
 };
@@ -24,7 +24,6 @@ export default function Content({
                                     notes, setNotes,
                                     links, setLinks,
                                     linkOpen, setLinkOpen,
-                                    linkInput, setLinkInput,
                                     participants,
                                 }: Props) {
 
@@ -55,7 +54,6 @@ export default function Content({
             <Link
                 links={links} setLinks={setLinks}
                 linkOpen={linkOpen} setLinkOpen={setLinkOpen}
-                linkInput={linkInput} setLinkInput={setLinkInput}
             />
 
             {/*/!* 노트(노션 느낌) *!/*/}
@@ -75,7 +73,7 @@ export default function Content({
                 />
             </div>
 
-            <TabletBoard participantsStr={participants} />
+            <BoardsPanel participantsStr={participants} />
 
             {/* 템플릿 */}
             <div className="rounded border border-[#E5E7EB] bg-white pb-2">

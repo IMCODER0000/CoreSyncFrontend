@@ -117,7 +117,7 @@ export default function MeetingEditorBody({ mode, initial, onSave, onCancel }: P
 						notes={notes} setNotes={setNotes}
 						links={links} setLinks={setLinks}
 						linkOpen={linkOpen} setLinkOpen={setLinkOpen}
-						linkInput={linkInput} setLinkInput={setLinkInput}
+						// linkInput={linkInput} setLinkInput={setLinkInput}
 						participants={participants}
 					/>
 				</div>
