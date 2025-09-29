@@ -1,6 +1,7 @@
 import {lazy, Suspense} from "react"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import { MainLayout, SidebarLayout } from "../common_ui";
+import { ProtectedRoute } from "../auth/routers/AuthRouters.tsx";
 
 // 랜딩 페이지
 const Home = lazy(() => import("../landing/pages/Home.tsx"));
@@ -11,6 +12,12 @@ const Workspace = lazy(() => import("../workspace/pages/Workspace.tsx"));
 // Profile 컴포넌트 임포트 (기본 내보내기가 있는지 확인 필요)
 const Profile = lazy(() => import("../profile/pages/Profile.tsx"));
 const Meeting = lazy(() => import("../meeting/routers/MeetingRouter.tsx"));
+const AuthRouters = lazy(() => import("../auth/routers/AuthRouters.tsx"));
+
+
+
+
+
 
 function AppRouter() {
     return (
@@ -19,25 +26,34 @@ function AppRouter() {
                 <Routes>
 
                     <Route path="/" element={<Home/>}/>
+                    <Route path="/auth/*" element={<AuthRouters />}/>
 
                     <Route element={<SidebarLayout />}>
                         <Route path="/workspace" element={
-                            <MainLayout>
-                                <Workspace/>
-                            </MainLayout>
+                            <ProtectedRoute>
+                                <MainLayout>
+                                    <Workspace/>
+                                </MainLayout>
+                            </ProtectedRoute>
                         }/>
                         <Route path="/ui-components" element={
-                            <MainLayout>
-                                <ComponentExamples/>
-                            </MainLayout>
+                            <ProtectedRoute>
+                                <MainLayout>
+                                    <ComponentExamples/>
+                                </MainLayout>
+                            </ProtectedRoute>
                         }/>
 
                         <Route path="/profile" element={
-                            <Profile/>
+                            <ProtectedRoute>
+                                <Profile/>
+                            </ProtectedRoute>
                         }/>
 
                         <Route path="/meeting/*" element={
-                            <Meeting/>
+                            <ProtectedRoute>
+                                <Meeting/>
+                            </ProtectedRoute>
                         }/>
                     </Route>
                 </Routes>
