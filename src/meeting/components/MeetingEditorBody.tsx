@@ -1,3 +1,4 @@
+// meeting/components/MeetingEditorBody.tsx
 import React from "react";
 import Content from "./notes/Content.tsx";
 import Details from "./notes/Details.tsx";
@@ -54,7 +55,7 @@ export default function MeetingEditorBody({ mode, initial, onSave, onCancel }: P
 	const [notes, setNotes] = React.useState(initial.meta.notes || "");
 	const [links, setLinks] = React.useState<string[]>(initial.meta.links ?? []);
 	const [linkOpen, setLinkOpen] = React.useState<boolean>(true);
-	const [linkInput, setLinkInput] = React.useState<string>("");
+	// const [linkInput, setLinkInput] = React.useState<string>("");
 
 	// ===== 우측(세부 정보) 상태 =====
 	const [allDay, setAllDay] = React.useState(!!initial.meeting.allDay);
@@ -64,15 +65,15 @@ export default function MeetingEditorBody({ mode, initial, onSave, onCancel }: P
 	const [location, setLocation] = React.useState(initial.meta.location || "");
 	const [participants, setParticipants] = React.useState(initial.meta.participants || ""); // ", " 문자열
 
-
-	// 저장
-	const handleSave = () => {
+	// === 수동 저장 (버튼용) ===
+	const handleSave = React.useCallback(() => {
 		const metaToSave: any = { notes, location, participants, links, files: [] };
 		metaToSave.createdBy = ownerId; // [KEEP] 데모. 백엔드에서 기록하면 제거.
 
 		onSave({
 			meeting: {
-				...initial.meeting,
+				// [CHANGED] 초기값 스프레드 제거 → 현재 state만 사용해서 덮어쓰기 이슈 방지
+				id: initial.meeting.id,                               // [CHANGED]
 				title: title || "제목 없음",
 				start,
 				end,
@@ -81,7 +82,34 @@ export default function MeetingEditorBody({ mode, initial, onSave, onCancel }: P
 			},
 			meta: metaToSave,
 		});
-	};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [title, notes, links, location, participants, start, end, allDay, team, ownerId, onSave]);
+
+	// === 자동 저장 (0.6초 디바운스) — 타이핑/선택이 멈추면 저장 ===
+	const AUTOSAVE_MS = 600; // [NEW] 600ms = 0.6초
+	React.useEffect(() => {
+		const timer = window.setTimeout(() => {
+			// 버튼 저장과 동일한 payload로 호출
+			const metaToSave: any = { notes, location, participants, links, files: [] };
+			metaToSave.createdBy = ownerId;
+
+			onSave({
+				meeting: {
+					// [CHANGED] 초기값 스프레드 제거 — 최신 state 보존
+					id: initial.meeting.id,                           // [CHANGED]
+					title: title || "제목 없음",
+					start,
+					end,
+					allDay,
+					team,
+				},
+				meta: metaToSave,
+			});
+		}, AUTOSAVE_MS);
+
+		return () => window.clearTimeout(timer); // [NEW] 입력이 이어지면 이전 타이머 취소
+		// 저장에 반영해야 하는 모든 편집 필드 의존성
+	}, [title, notes, links, location, participants, start, end, allDay, team, ownerId, onSave, initial.meeting.id]); // [NEW]
 
 	return (
 		<div className="flex-1 min-h-0 px-6 pb-8">
@@ -105,13 +133,13 @@ export default function MeetingEditorBody({ mode, initial, onSave, onCancel }: P
 			{/* === 2열 레이아웃 === */}
 			<div
 				className="
-          grid gap-6 items-start        // [NEW]
+          grid gap-6 items-start
           grid-cols-1
-          lg:grid-cols-[minmax(0,1fr)_340px]   // 왼쪽 가변, 오른쪽 340px
+          lg:grid-cols-[minmax(0,1fr)_340px]
         "
 			>
 				{/* 왼쪽: 콘텐츠 */}
-				<div className="min-w-0">  {/* [NEW] min-w-0로 내용 영역 줄바꿈 안정화 */}
+				<div className="min-w-0">
 					<Content
 						title={title} setTitle={setTitle}
 						notes={notes} setNotes={setNotes}
