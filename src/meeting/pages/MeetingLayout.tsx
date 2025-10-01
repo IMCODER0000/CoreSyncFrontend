@@ -1,4 +1,6 @@
 import {NavLink, Outlet, useNavigate} from "react-router-dom";
+import {createMeeting} from "../api/meetings.ts";
+import {useCallback} from "react";
 
 // 탭 아이콘
 function TabIcon({label}: { label: string }) {
@@ -57,10 +59,23 @@ function Tab({to, label}: { to: string; label: string }) {
 export function MeetingSubnav({ onNewMeeting }: { onNewMeeting?: () => void }) {
 
     const navigate = useNavigate();
-    const handleNew = () => {
-        if (onNewMeeting) return onNewMeeting();
-        navigate("/meeting/new");
-    };
+    const handleNew = useCallback(async () => {
+        if (onNewMeeting) return onNewMeeting(); // 외부에서 주면 우선 사용
+
+        const now = new Date();
+        try {
+            const draft = await createMeeting({
+                title: "",
+                start: now,
+                end: new Date(now.getTime() + 60 * 60 * 1000),
+                allDay: false,
+            });
+            navigate(`/meeting/${draft.id}`);
+        } catch {
+            const tmpId = crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
+            navigate(`/meeting/${tmpId}`);
+        }
+    }, [onNewMeeting, navigate]);
 
     return (
         <div className="px-6 pt-3 pb-1 border-b border-[#EEF1F5] bg-white">
