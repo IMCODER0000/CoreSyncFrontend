@@ -15,6 +15,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.8",
+    "@hello-pangea/dnd": "^18.0.1",
     "@mui/icons-material": "^7.3.2",
     "@mui/material": "^7.3.2",
     "@tailwindcss/vite": "^4.1.11",

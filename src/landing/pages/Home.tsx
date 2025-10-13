@@ -5,8 +5,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Badge } from '../../common_ui';
 const Home = () => {
     const navigate = useNavigate();
-    const handleClick = () =>{
+    
+    const handleClick = () => {
         navigate("/workspace");
+    }
+
+    const handleStartClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const userToken = localStorage.getItem('userToken');
+        
+        if (!userToken) {
+            // 토큰이 없으면 로그인 페이지로 이동
+            navigate('/auth/login');
+        } else {
+            // 토큰이 있으면 workspace로 이동
+            navigate('/workspace');
+        }
     }
 
     return (
@@ -51,11 +65,15 @@ const Home = () => {
                         <Button variant="outline" color="primary" fullWidth className="shadow-sm">
                             서비스 알아보기
                         </Button>
-                        <Link to="/workspace" className="w-full">
-                            <Button variant="filled" color="primary" fullWidth className="shadow-md">
-                                근태 관리 시작하기
-                            </Button>
-                        </Link>
+                        <Button 
+                            variant="filled" 
+                            color="primary" 
+                            fullWidth 
+                            className="shadow-md"
+                            onClick={handleStartClick}
+                        >
+                            근태 관리 시작하기
+                        </Button>
                     </div>
 
                     <div className="mt-10 text-sm text-gray-600 w-full max-w-xs mx-auto md:mx-0 text-center ">
