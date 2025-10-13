@@ -23,7 +23,7 @@ export const useKakaoLogin = () => {
 
                 console.log("📩 받은 메시지 데이터:", event.data);
 
-                const { accessToken, isNewUser, user } = event.data;
+                const {accessToken, isNewUser, user} = event.data;
                 const MAIN_CONTAINER_URL = import.meta.env.VITE_MAIN_CONTAINER_URL as string;
                 const VITE_MAIN_TERMS_URL = import.meta.env.VITE_MAIN_TERMS_URL as string;
 
@@ -60,19 +60,62 @@ export const useKakaoLogin = () => {
                     window.location.href = MAIN_CONTAINER_URL;
                 }
 
-                try { popup.close(); } catch {}
+                try {
+                    popup.close();
+                } catch {
+                }
             };
 
             window.addEventListener("message", receiveMessage);
         } catch (error) {
             console.error(error);
         }
-    };
+    }
+
+    const requestRegister = async () => {
+        try {
+
+            const springAxiosInstance = axios.create({
+                baseURL: import.meta.env.VITE_SPRING_API,
+                withCredentials: true,
+            });
+            const accessToken = sessionStorage.getItem("tempToken");
+            let userInfo = null;
+            const user = sessionStorage.getItem("userInfo");
+
+            if (user) {
+                userInfo = JSON.parse(user);
+                userInfo.loginType = "KAKAO";
+            }
+
+            const res = await springAxiosInstance.post(
+                "/account/register",
+                userInfo,
+                {
+                    headers: {
+                        "Authentication": accessToken
+                    }
+                }
+            );
+
+            localStorage.setItem("isLoggedIn", "wxx-sdwsx-ds=!>,?");
+            localStorage.setItem("userToken", res.data);
+            localStorage.removeItem("tempToken");
+            window.location.href = "/";
+
+        }catch (error) {
+            console.error(error);
+            return;
+        }
+    }
 
 
 
 
 
 
-    return { requestKakaoLoginToSpring };
+
+
+
+    return { requestKakaoLoginToSpring, requestRegister };
 };
