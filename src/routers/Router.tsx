@@ -13,6 +13,8 @@ const Workspace = lazy(() => import("../workspace/pages/Workspace.tsx"));
 const Profile = lazy(() => import("../profile/pages/Profile.tsx"));
 const Meeting = lazy(() => import("../meeting/routers/MeetingRouter.tsx"));
 const AuthRouters = lazy(() => import("../auth/routers/AuthRouters.tsx"));
+const AgileRouter = lazy(() => import("../agile/routers/AgileRouter.tsx"));
+const TeamDetailPage = lazy(() => import("../team/pages/TeamDetailPage.tsx"));
 
 
 
@@ -53,6 +55,22 @@ function AppRouter() {
                         <Route path="/meeting/*" element={
                             <ProtectedRoute>
                                 <Meeting/>
+                            </ProtectedRoute>
+                        }/>
+
+                        <Route path="/agile/*" element={
+                            <ProtectedRoute>
+                                <MainLayout>
+                                    <AgileRouter/>
+                                </MainLayout>
+                            </ProtectedRoute>
+                        }/>
+
+                        <Route path="/team/:teamId" element={
+                            <ProtectedRoute>
+                                <MainLayout>
+                                    <TeamDetailPage/>
+                                </MainLayout>
                             </ProtectedRoute>
                         }/>
                     </Route>

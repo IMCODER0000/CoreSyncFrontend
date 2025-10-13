@@ -15,6 +15,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.8",
+    "@hello-pangea/dnd": "^18.0.1",
     "@hocuspocus/provider": "^3.2.3",
     "@lexical/code": "0.15.0",
     "@lexical/link": "0.15.0",
