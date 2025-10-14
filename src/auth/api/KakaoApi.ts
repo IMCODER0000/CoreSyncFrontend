@@ -87,13 +87,14 @@ export const useKakaoLogin = () => {
                 userInfo = JSON.parse(user);
                 userInfo.loginType = "KAKAO";
             }
+            console.log(userInfo);
 
             const res = await springAxiosInstance.post(
                 "/account/register",
                 userInfo,
                 {
                     headers: {
-                        "Authentication": accessToken
+                        "Authorization": accessToken
                     }
                 }
             );
