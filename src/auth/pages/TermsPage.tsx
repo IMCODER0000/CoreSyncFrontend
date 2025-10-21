@@ -118,7 +118,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../../common_ui';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useKakaoLogin } from "../api/KakaoApi";
 
 interface TermsPageProps {
@@ -128,8 +128,8 @@ interface TermsPageProps {
 
 const TermsPage: React.FC<TermsPageProps> = ({ onAccept, onDecline }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const provider = location.state?.provider || 'kakao';
+  // const location = useLocation();
+  // const provider = location.state?.provider || 'kakao';
   const fromRouter = !onAccept || !onDecline;
   const { requestRegister } = useKakaoLogin();
 

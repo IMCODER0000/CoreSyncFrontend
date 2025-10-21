@@ -26,7 +26,7 @@ const AttendancePage: React.FC = () => {
   const [leaveReason, setLeaveReason] = useState('');
   const [leaveType, setLeaveType] = useState<'ANNUAL' | 'HALF_AM' | 'HALF_PM'>('ANNUAL');
   const [teams, setTeams] = useState<TeamResponse[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [leaveStats, setLeaveStats] = useState({ totalDays: 15, usedDays: 0, remainingDays: 15 });
   const [leaveHistory, setLeaveHistory] = useState<ApiAnnualLeave[]>([]);
   const [todayAttendance, setTodayAttendance] = useState<ApiAttendanceRecord | null>(null);

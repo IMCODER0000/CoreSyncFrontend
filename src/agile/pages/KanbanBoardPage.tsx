@@ -37,7 +37,7 @@ const KanbanBoardPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [boardTitle, setBoardTitle] = useState('');
-  const [projectId, setProjectId] = useState<number | null>(null);
+  const [, setProjectId] = useState<number | null>(null);
   const [tickets, setTickets] = useState<KanbanTicket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState<KanbanTicket | null>(null);
@@ -47,7 +47,7 @@ const KanbanBoardPage = () => {
   
   // 팀 멤버 관련 상태
   const [teamMembers, setTeamMembers] = useState<TeamMemberResponse[]>([]);
-  const [teamId, setTeamId] = useState<number | null>(null);
+  const [, setTeamId] = useState<number | null>(null);
   const [memberNicknames, setMemberNicknames] = useState<Map<number, string>>(new Map());
   
   // GitHub 커밋 관련 상태

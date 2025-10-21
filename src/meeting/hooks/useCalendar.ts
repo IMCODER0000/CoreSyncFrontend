@@ -5,8 +5,8 @@ import { meetingApi } from "../../api/meetingApi";
 export interface Meeting {
   id: string;
   title: string;
-  start: Date | string;
-  end: Date | string;
+  start: string;
+  end: string;
   allDay?: boolean;
 }
 

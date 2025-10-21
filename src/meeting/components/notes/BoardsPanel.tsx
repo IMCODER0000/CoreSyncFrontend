@@ -383,7 +383,7 @@ function PreviewColumnCard({ label }: { label: string }) {
     );
 }
 
-function AddColumnCard({ onOpen, btnRef }: { onOpen: () => void; btnRef: React.RefObject<HTMLButtonElement> }) {
+function AddColumnCard({ onOpen, btnRef }: { onOpen: () => void; btnRef: React.RefObject<HTMLButtonElement | null> }) {
     return (
         <div className="w-[220px] flex-none rounded-2xl border-2 border-dashed border-[#D9E2F2] bg-white p-3">
             <button ref={btnRef} type="button" onClick={onOpen} className="w-full text-left text-[13px] text-[#6482C0]">

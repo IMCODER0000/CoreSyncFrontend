@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   
   // 팀 데이터 상태
   const [teams, setTeams] = useState<Team[]>([]);
-  const [isLoadingTeams, setIsLoadingTeams] = useState(false);
+  const [, setIsLoadingTeams] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCreatingTeam, setIsCreatingTeam] = useState(false);
   
