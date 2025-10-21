@@ -63,41 +63,41 @@ const getButtonClasses = ({
   loading: boolean;
 }) => {
   // 기본 클래스
-  const baseClasses = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseClasses = 'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:scale-[1.02] active:scale-[0.98]';
   
   // 크기 클래스
   const sizeClasses = {
-    sm: 'py-1.5 px-3 text-sm',
-    md: 'py-2.5 px-5 text-base',
-    lg: 'py-3 px-6 text-lg',
+    sm: 'py-2 px-4 text-sm',
+    md: 'py-2.5 px-6 text-base',
+    lg: 'py-3.5 px-8 text-lg',
   }[size];
   
   // 색상 + 변형 클래스 조합
   const colorVariantClasses = {
     primary: {
-      filled: 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300',
-      outline: 'border border-blue-500 text-blue-600 hover:bg-blue-50 focus:ring-blue-200',
-      ghost: 'text-blue-600 hover:bg-blue-50 focus:ring-blue-200',
+      filled: 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 focus:ring-indigo-300 shadow-md hover:shadow-lg',
+      outline: 'border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50 focus:ring-indigo-200 shadow-sm hover:shadow-md',
+      ghost: 'text-indigo-600 hover:bg-indigo-50 focus:ring-indigo-200',
     },
     secondary: {
-      filled: 'bg-gray-500 text-white hover:bg-gray-600 focus:ring-gray-300',
-      outline: 'border border-gray-500 text-gray-600 hover:bg-gray-50 focus:ring-gray-200',
+      filled: 'bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 focus:ring-gray-300 shadow-md hover:shadow-lg',
+      outline: 'border-2 border-gray-500 text-gray-600 hover:bg-gray-50 focus:ring-gray-200 shadow-sm hover:shadow-md',
       ghost: 'text-gray-600 hover:bg-gray-50 focus:ring-gray-200',
     },
     danger: {
-      filled: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-300',
-      outline: 'border border-red-500 text-red-600 hover:bg-red-50 focus:ring-red-200',
+      filled: 'bg-gradient-to-r from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 focus:ring-red-300 shadow-md hover:shadow-lg',
+      outline: 'border-2 border-red-500 text-red-600 hover:bg-red-50 focus:ring-red-200 shadow-sm hover:shadow-md',
       ghost: 'text-red-600 hover:bg-red-50 focus:ring-red-200',
     },
     success: {
-      filled: 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-300',
-      outline: 'border border-green-500 text-green-600 hover:bg-green-50 focus:ring-green-200',
-      ghost: 'text-green-600 hover:bg-green-50 focus:ring-green-200',
+      filled: 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 focus:ring-emerald-300 shadow-md hover:shadow-lg',
+      outline: 'border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 focus:ring-emerald-200 shadow-sm hover:shadow-md',
+      ghost: 'text-emerald-600 hover:bg-emerald-50 focus:ring-emerald-200',
     },
     warning: {
-      filled: 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-300',
-      outline: 'border border-yellow-500 text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-200',
-      ghost: 'text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-200',
+      filled: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 focus:ring-amber-300 shadow-md hover:shadow-lg',
+      outline: 'border-2 border-amber-500 text-amber-600 hover:bg-amber-50 focus:ring-amber-200 shadow-sm hover:shadow-md',
+      ghost: 'text-amber-600 hover:bg-amber-50 focus:ring-amber-200',
     },
   }[color][variant];
   

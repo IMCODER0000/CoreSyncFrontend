@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Route, Routes, Navigate} from "react-router-dom";
 import LoginPage from "../pages/LoginPage.tsx";
 import TermsPage from "../pages/TermsPage.tsx";
+import GithubCallbackPage from "../pages/GithubCallbackPage.tsx";
 import { checkAuthentication } from "../api/authApi.ts";
 
 // 로그인 상태 확인 함수 (로컬 체크용)
@@ -66,6 +67,7 @@ export default function AuthRouters() {
             <Route path="/" element={<Navigate to="login" replace />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="terms" element={<TermsPage />} />
+            <Route path="github-callback" element={<GithubCallbackPage />} />
         </Routes>
     )
 };

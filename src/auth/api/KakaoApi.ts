@@ -101,6 +101,7 @@ export const useKakaoLogin = () => {
 
             localStorage.setItem("isLoggedIn", "wxx-sdwsx-ds=!>,?");
             localStorage.setItem("userToken", res.data);
+            localStorage.setItem("nickname", userInfo.nickname);
             localStorage.removeItem("tempToken");
             window.location.href = "/";
 

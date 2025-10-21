@@ -13,13 +13,9 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ className = '', children }) => {
   
   return (
-    <div className={`h-screen bg-gray-100 ${className}`}>
-      <main className="w-full overflow-auto transition-all duration-300">
-        <div className="container mx-auto p-6 min-h-screen">
-          <div className="bg-white rounded-xl shadow-sm p-6" style={{ minHeight: 'calc(100vh - 3rem)' }}>
-            {children || <Outlet />}
-          </div>
-        </div>
+    <div className={`h-screen ${className}`}>
+      <main className="w-full h-full overflow-auto">
+        {children || <Outlet />}
       </main>
     </div>
   );

@@ -57,20 +57,20 @@ const getCardClasses = ({
   fullWidth: boolean;
 }) => {
   // 기본 클래스
-  const baseClasses = 'rounded-lg overflow-hidden';
+  const baseClasses = 'rounded-2xl overflow-hidden transition-all duration-300 bg-white';
   
   // 변형 클래스
   const variantClasses = {
-    outlined: 'border border-gray-200',
-    elevated: 'border border-gray-100 shadow-md',
-    filled: 'bg-gray-50',
+    outlined: 'border border-gray-200 hover:border-indigo-200 hover:shadow-md',
+    elevated: 'border border-gray-100 shadow-lg hover:shadow-xl',
+    filled: 'bg-gradient-to-br from-gray-50 to-white border border-gray-100 shadow-sm hover:shadow-md',
   }[variant];
   
   // 크기 클래스
   const sizeClasses = {
-    sm: 'p-3',
-    md: 'p-4',
-    lg: 'p-6',
+    sm: 'p-4',
+    md: 'p-6',
+    lg: 'p-8',
   }[size];
   
   // 너비 클래스
@@ -103,7 +103,7 @@ const Header: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...rest
 }) => {
   return (
-    <div className={`font-medium text-lg mb-3 pb-2 border-b border-gray-100 ${className || ''}`} {...rest}>
+    <div className={`font-bold text-xl mb-4 pb-3 border-b border-gray-100 text-gray-800 ${className || ''}`} {...rest}>
       {children}
     </div>
   );
@@ -129,7 +129,7 @@ const Footer: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...rest
 }) => {
   return (
-    <div className={`mt-4 pt-3 border-t border-gray-100 ${className || ''}`} {...rest}>
+    <div className={`mt-5 pt-4 border-t border-gray-100 ${className || ''}`} {...rest}>
       {children}
     </div>
   );

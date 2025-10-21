@@ -2,13 +2,17 @@ import React from "react";
 import { LayoutGroup } from "framer-motion";
 import { MeetingSubnav } from "./MeetingLayout";
 import { useCalendar } from "../hooks/useCalendar";
+import { useNavigate } from "react-router-dom";
+import { meetingApi } from "../../api/meetingApi";
 
 const PAGE_SIZE = 10;
 
 export default function MeetingListPage() {
     const { meetings } = useCalendar();
+    const navigate = useNavigate();
 
     const [page, setPage] = React.useState(1);
+    const [deleting, setDeleting] = React.useState<string | null>(null);
 
     const sorted = React.useMemo(() => {
         return [...(meetings ?? [])].sort((a: any, b: any) => {
@@ -43,6 +47,33 @@ export default function MeetingListPage() {
 
     const pad2 = (n: number) => String(n).padStart(2, "0");
 
+    const handleDelete = async (meetingId: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!window.confirm("이 회의를 삭제하시겠습니까?")) return;
+        
+        try {
+            setDeleting(meetingId);
+            await meetingApi.deleteMeeting(meetingId);
+            window.location.reload(); // 간단하게 새로고침
+        } catch (error: any) {
+            console.error("삭제 실패:", error);
+            if (error?.response?.status === 403) {
+                alert("삭제 권한이 없습니다.");
+            } else if (error?.response?.status === 404) {
+                alert("이미 삭제된 회의입니다.");
+                window.location.reload();
+            } else {
+                alert("삭제 중 오류가 발생했습니다.");
+            }
+        } finally {
+            setDeleting(null);
+        }
+    };
+
+    const handleRowClick = (meetingId: string) => {
+        navigate(`/meeting/${meetingId}`);
+    };
+
     return (
         <LayoutGroup>
             <div className="min-h-[100dvh] w-full bg-[#F5F6F8] px-8 py-6 flex flex-col">
@@ -74,13 +105,14 @@ export default function MeetingListPage() {
                             {/* 테이블 */}
                             <div className="flex-1 min-h-0 overflow-auto rounded-xl">
                                 <div className="min-w-[980px]">
-                                    {/* 헤더: 1번 이미지 톤으로 살짝 두툼하고 밝은 회색 배경 */}
-                                    <div className="grid grid-cols-[88px_1fr_1fr_1fr_180px] items-center px-6 h-12 bg-[#F7F8FB] rounded-2xl text-[14px] font-medium text-[#6B7280]">
-                                        <div className="tracking-wide">No.</div>
+                                    {/* 헤더 */}
+                                    <div className="grid grid-cols-[88px_1fr_1fr_1fr_180px_100px] items-center px-6 h-12 border-b border-[#EEF2F6] text-[12px] text-[#6B7280] font-semibold">
+                                        <div className="tracking-wide">번호</div>
                                         <div className="tracking-wide">제목</div>
                                         <div className="tracking-wide">참여팀</div>
                                         <div className="tracking-wide">회의 날짜</div>
                                         <div className="tracking-wide justify-self-end pr-2">상태</div>
+                                        <div className="tracking-wide text-center">작업</div>
                                     </div>
 
                                     {/* 로우 */}
@@ -96,7 +128,8 @@ export default function MeetingListPage() {
                                             <div
                                                 key={m.id ?? num}
                                                 //행 높이/간격/hover 색상
-                                                className="grid grid-cols-[88px_1fr_1fr_1fr_180px] items-center px-6 min-h-16 border-b border-[#EEF2F6] hover:bg-[#FAFBFF]"
+                                                className="grid grid-cols-[88px_1fr_1fr_1fr_180px_100px] items-center px-6 min-h-16 border-b border-[#EEF2F6] hover:bg-[#FAFBFF] cursor-pointer"
+                                                onClick={() => handleRowClick(m.id)}
                                             >
                                                 {/* 번호 */}
                                                 <div className="text-[14px]">
@@ -119,6 +152,17 @@ export default function MeetingListPage() {
                                                 {/* 상태 */}
                                                 <div className="justify-self-end pr-2">
                                                     <StatusPill kind={status} />
+                                                </div>
+
+                                                {/* 작업 버튼 */}
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <button
+                                                        onClick={(e) => handleDelete(m.id, e)}
+                                                        disabled={deleting === m.id}
+                                                        className="px-3 py-1 text-xs text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
+                                                    >
+                                                        {deleting === m.id ? "삭제중..." : "삭제"}
+                                                    </button>
                                                 </div>
                                             </div>
                                         );

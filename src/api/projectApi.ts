@@ -1,24 +1,30 @@
-import axiosInstance from './axiosInstance';
-import type { CreateProjectRequest, ListProjectResponse, Project } from './types';
+import { agileAxiosInstance } from './axiosInstance';
+import type { CreateProjectRequest, ListProjectResponse, Project, ReadProjectResponse } from './types';
+
+export interface LinkGithubRepositoryRequest {
+  repositoryUrl: string;
+  repositoryName: string;
+  owner: string;
+}
 
 export const projectApi = {
+  // 프로젝트 생성
+  createProject: async (data: CreateProjectRequest): Promise<Project> => {
+    const response = await agileAxiosInstance.post('/project/create', data);
+    return response.data;
+  },
+
   // 프로젝트 목록 조회
   getProjectList: async (page: number = 1, perPage: number = 10): Promise<ListProjectResponse> => {
-    const response = await axiosInstance.get('/project/list', {
+    const response = await agileAxiosInstance.get('/project/list', {
       params: { page, perPage },
     });
     return response.data;
   },
 
-  // 프로젝트 생성
-  createProject: async (data: CreateProjectRequest): Promise<Project> => {
-    const response = await axiosInstance.post('/project/register', data);
-    return response.data;
-  },
-
   // 프로젝트 상세 조회
-  getProjectDetail: async (id: number, page: number = 1, perPage: number = 10) => {
-    const response = await axiosInstance.get(`/project/read/${id}`, {
+  getProjectDetail: async (id: number, page: number = 1, perPage: number = 10): Promise<ReadProjectResponse> => {
+    const response = await agileAxiosInstance.get(`/project/read/${id}`, {
       params: { page, perPage },
     });
     return response.data;
@@ -26,7 +32,19 @@ export const projectApi = {
 
   // 팀 프로젝트 목록 조회
   getTeamProjects: async (teamId: number): Promise<ListProjectResponse> => {
-    const response = await axiosInstance.get(`/project/team/${teamId}`);
+    const response = await agileAxiosInstance.get(`/project/team/${teamId}`);
+    return response.data;
+  },
+
+  // GitHub 저장소 연동
+  linkGithubRepository: async (projectId: number, data: LinkGithubRepositoryRequest): Promise<string> => {
+    const response = await agileAxiosInstance.post(`/project/${projectId}/link-github`, data);
+    return response.data;
+  },
+
+  // 프로젝트 삭제
+  deleteProject: async (projectId: number): Promise<string> => {
+    const response = await agileAxiosInstance.delete(`/project/${projectId}`);
     return response.data;
   },
 };

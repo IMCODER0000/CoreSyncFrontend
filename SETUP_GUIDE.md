@@ -13,7 +13,14 @@ cp .env.example .env
 
 `.env` 파일 내용:
 ```env
-VITE_API_BASE_URL=http://localhost:8080
+# Account Service API URL (인증, 계정, 팀 관련)
+VITE_ACCOUNT_API_URL=http://localhost:8001
+
+# Agile Service API URL (프로젝트, 애자일보드, 칸반티켓 관련)
+VITE_AGILE_API_URL=http://localhost:8002
+
+# Spring API (카카오 로그인용)
+VITE_SPRING_API=http://localhost:8001
 ```
 
 ### 2. 의존성 설치 및 실행
@@ -75,17 +82,30 @@ npm run dev
 ## 🔧 백엔드 연동 확인사항
 
 ### 백엔드 서버가 실행 중인지 확인
+
+**Account Service (8001 포트)**
 ```bash
-# 백엔드 디렉토리에서
-cd /Users/choehyeonsu/back/CoreSyncBackend
+cd /Users/choehyeonsu/back/CoreSync/account_service
+./gradlew bootRun
+```
+
+**Agile Service (8002 포트)**
+```bash
+cd /Users/choehyeonsu/back/CoreSync/agile_service
 ./gradlew bootRun
 ```
 
 ### API 엔드포인트 확인
-- 백엔드 서버: http://localhost:8080
-- 프로젝트 목록 API: http://localhost:8080/project/list
-- 애자일 보드 API: http://localhost:8080/agile-board/read/:id
-- 칸반 티켓 API: http://localhost:8080/kanban-ticket/register
+
+**Account Service (http://localhost:8001)**
+- 인증 API: http://localhost:8001/authentication/authenticate
+- 계정 API: http://localhost:8001/account/register
+- 팀 API: http://localhost:8001/api/team/list
+
+**Agile Service (http://localhost:8002)**
+- 프로젝트 목록 API: http://localhost:8002/project/list
+- 애자일 보드 API: http://localhost:8002/agile-board/read/:id
+- 칸반 티켓 API: http://localhost:8002/kanban-ticket/register
 
 ## 🐛 문제 해결
 
@@ -100,8 +120,8 @@ cd /Users/choehyeonsu/back/CoreSyncBackend
 ### 3. "프로젝트 목록 로드 실패"
 **원인**: 백엔드 서버가 실행되지 않았거나 API URL이 잘못됨
 **해결**: 
-- 백엔드 서버 실행 확인
-- `.env` 파일의 `VITE_API_BASE_URL` 확인
+- Account Service (8001 포트) 및 Agile Service (8002 포트) 실행 확인
+- `.env` 파일의 `VITE_ACCOUNT_API_URL` 및 `VITE_AGILE_API_URL` 확인
 
 ### 4. 빈 화면만 표시됨
 **원인**: 아직 생성된 프로젝트가 없음
@@ -110,9 +130,10 @@ cd /Users/choehyeonsu/back/CoreSyncBackend
 ## 📊 데이터 흐름
 
 ```
-사용자 → 프론트엔드 → axiosInstance (토큰 자동 추가)
+사용자 → 프론트엔드 → accountAxiosInstance (인증/계정/팀)
+                    → agileAxiosInstance (프로젝트/보드/티켓)
                           ↓
-                    백엔드 API (인증 확인)
+                    Account Service (8001) / Agile Service (8002)
                           ↓
                     데이터베이스
                           ↓
@@ -161,7 +182,9 @@ npm run build
 
 ### 환경 변수 (프로덕션)
 ```env
-VITE_API_BASE_URL=https://your-api-domain.com
+VITE_ACCOUNT_API_URL=https://account-api.your-domain.com
+VITE_AGILE_API_URL=https://agile-api.your-domain.com
+VITE_SPRING_API=https://account-api.your-domain.com
 ```
 
 ## 📞 추가 지원

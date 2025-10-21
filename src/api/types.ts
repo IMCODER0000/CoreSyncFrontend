@@ -12,12 +12,25 @@ export interface Project {
 
 export interface CreateProjectRequest {
   title: string;
+  teamId?: number; // 팀 ID (선택사항)
 }
 
 export interface ListProjectResponse {
   projectList: any[];
   totalItems: number;
   totalPages: number;
+}
+
+export interface ReadProjectResponse {
+  projectId: number;
+  title: string;
+  writerNickname: string;
+  agileBoardList: any[];
+  totalItems: number;
+  totalPages: number;
+  githubOwner?: string;
+  githubRepositoryName?: string;
+  githubRepositoryUrl?: string;
 }
 
 // 애자일 보드 관련 타입
@@ -40,6 +53,7 @@ export interface CreateAgileBoardRequest {
 
 export interface ReadAgileBoardResponse {
   agileBoardId: number;
+  projectId: number;
   title: string;
   writerNickname: string;
   kanbanTicketList: any[];
@@ -66,8 +80,12 @@ export interface KanbanTicket {
     nickname: string;
   };
   agileBoardId: number;
+  backlogNumber?: number;
   createDate: string;
   updateDate: string;
+  linkedCommitSha?: string;
+  linkedCommitMessage?: string;
+  linkedCommitUrl?: string;
 }
 
 export interface CreateKanbanTicketRequest {
@@ -77,4 +95,26 @@ export interface CreateKanbanTicketRequest {
   status?: TicketStatus;
   priority?: TicketPriority;
   domain?: string;
+}
+
+// 댓글 관련 타입
+export interface TicketComment {
+  id: number;
+  content: string;
+  writer: {
+    id: number;
+    nickname: string;
+  };
+  ticketId: number;
+  createDate: string;
+  updateDate: string;
+}
+
+export interface CreateCommentRequest {
+  ticketId: number;
+  content: string;
+}
+
+export interface UpdateCommentRequest {
+  content: string;
 }

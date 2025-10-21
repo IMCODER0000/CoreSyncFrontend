@@ -5,6 +5,8 @@ import CreateTeamModal from './CreateTeamModal';
 import type { Team } from '../types/team.types';
 import { teamApi } from '../../api/teamApi';
 import { projectApi } from '../../api/projectApi';
+import { logout as logoutApi } from '../../auth/api/authApi';
+import { attendanceApi } from '../../api/attendanceApi';
 
 interface SidebarItem {
   id: string;
@@ -28,11 +30,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   
+  // 사용자 정보
+  const [userNickname, setUserNickname] = useState<string>('');
+  
   // 팀 데이터 상태
   const [teams, setTeams] = useState<Team[]>([]);
   const [isLoadingTeams, setIsLoadingTeams] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCreatingTeam, setIsCreatingTeam] = useState(false);
+  
+  // 오늘의 총 작업 시간
+  const [totalWorkTime, setTotalWorkTime] = useState<string>('0:00:00');
+  const [baseSeconds, setBaseSeconds] = useState<number>(0);
+  const [isWorking, setIsWorking] = useState<boolean>(false);
+  const [workStartTime, setWorkStartTime] = useState<Date | null>(null);
 
   // 팀 목록 조회
   const fetchTeams = async () => {
@@ -66,8 +77,76 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  // 총 작업 시간 로드
+  const loadTotalWorkTime = async () => {
+    try {
+      const data = await attendanceApi.getTodayTotalWorkTime();
+      setBaseSeconds(data.totalSeconds);
+      
+      // 현재 작업 중인지 확인 (localStorage에서)
+      const workingTeamId = localStorage.getItem('currentWorkingTeam');
+      const sessionStart = localStorage.getItem('sessionStartTime');
+      
+      if (workingTeamId && sessionStart) {
+        setIsWorking(true);
+        setWorkStartTime(new Date(sessionStart));
+      } else {
+        setIsWorking(false);
+        setWorkStartTime(null);
+      }
+    } catch (error) {
+      console.error('총 작업 시간 로드 실패:', error);
+    }
+  };
+  
+  // 실시간 타이머
+  useEffect(() => {
+    const calculateTime = () => {
+      let totalSeconds = baseSeconds;
+      
+      if (isWorking && workStartTime) {
+        const now = new Date();
+        const elapsedSeconds = Math.floor((now.getTime() - workStartTime.getTime()) / 1000);
+        totalSeconds += elapsedSeconds;
+      }
+      
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      setTotalWorkTime(`${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+    };
+    
+    calculateTime();
+    
+    if (isWorking) {
+      const interval = setInterval(calculateTime, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [baseSeconds, isWorking, workStartTime]);
+
   useEffect(() => {
     fetchTeams();
+    // localStorage에서 사용자 닉네임 가져오기
+    const nickname = localStorage.getItem('nickname') || 'Guest';
+    setUserNickname(nickname);
+    
+    // 총 작업 시간 로드
+    loadTotalWorkTime();
+    
+    // 10초마다 총 작업 시간 업데이트
+    const interval = setInterval(loadTotalWorkTime, 10000);
+    
+    // 작업 상태 변경 이벤트 리스너
+    const handleWorkStatusChange = () => {
+      console.log('작업 상태 변경 감지');
+      loadTotalWorkTime();
+    };
+    window.addEventListener('workStatusChanged', handleWorkStatusChange);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('workStatusChanged', handleWorkStatusChange);
+    };
   }, []);
 
   const handleTeamSelect = (teamId: number) => {
@@ -97,6 +176,29 @@ const Sidebar: React.FC<SidebarProps> = ({
       alert(errorMessage);
     } finally {
       setIsCreatingTeam(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // 백엔드 로그아웃 API 호출
+      const success = await logoutApi();
+      
+      if (success) {
+        console.log('✅ 로그아웃 성공');
+      } else {
+        console.warn('⚠️ 로그아웃 API 호출 실패, 로컬 데이터만 삭제');
+      }
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    } finally {
+      // API 성공 여부와 관계없이 로컬 데이터 정리
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('nickname');
+      localStorage.removeItem('isLoggedIn');
+      
+      // 로그인 페이지로 이동
+      navigate('/auth/login');
     }
   };
   
@@ -156,21 +258,75 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div 
-      className={`bg-white flex flex-col h-screen transition-all duration-300 shadow-lg rounded-tr-xl rounded-br-xl ${
-        collapsed ? 'w-16' : 'w-60'
+      className={`bg-white flex flex-col h-screen transition-all duration-300 shadow-sm border-r border-gray-200 ${
+        collapsed ? 'w-16' : 'w-64'
       }`}
     >
-      <div className={`flex items-center ${collapsed ? 'justify-center' : 'px-4'} py-5 mb-2`}>
-        <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 font-bold text-base">
-          <span className="text-blue-500">C</span>
+      {/* 로고 및 사용자 정보 섹션 */}
+      <div className={`${collapsed ? 'px-2' : 'px-5'} py-5 mb-2`}>
+        {/* 로고 */}
+        <div className={`flex items-center ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-9 h-9 rounded-lg bg-[#5b7cdb] flex items-center justify-center shadow-sm">
+            <span className="text-white font-bold text-base">C</span>
+          </div>
+          {!collapsed && (
+            <span className="ml-3 text-base font-bold text-gray-800">CoreSync</span>
+          )}
         </div>
+        
+        {/* 사용자 정보 카드 */}
         {!collapsed && (
-          <span className="ml-3 text-base font-bold text-gray-800">CoreSync</span>
+          <div className="mt-4 p-3.5 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center space-x-3">
+              {/* 프로필 아바타 */}
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-[#5b7cdb] flex items-center justify-center">
+                  <span className="text-white font-semibold text-sm">
+                    {userNickname.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#52c17c] rounded-full border-2 border-white"></div>
+              </div>
+              
+              {/* 사용자 정보 */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">
+                  {userNickname}
+                </p>
+                <p className="text-xs text-gray-500 flex items-center mt-1">
+                  <span className="w-1.5 h-1.5 bg-[#52c17c] rounded-full mr-1.5"></span>
+                  활동 중
+                </p>
+              </div>
+            </div>
+            
+            {/* 오늘의 총 작업 시간 */}
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">오늘 작업 시간</span>
+                <span className="text-sm font-semibold text-[#5b7cdb]">{totalWorkTime}</span>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* collapsed 상태일 때 작은 아바타만 표시 */}
+        {collapsed && (
+          <div className="mt-4 flex justify-center">
+            <div className="relative">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 flex items-center justify-center shadow-lg ring-2 ring-white hover:ring-indigo-200 transition-all duration-300">
+                <span className="text-white font-bold text-xs">
+                  {userNickname.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-sm"></div>
+            </div>
+          </div>
         )}
       </div>
 
-      <nav className="flex-1 px-2 py-2">
-        <ul className="space-y-2">
+      <nav className="flex-1 px-3 py-3">
+        <ul className="space-y-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
             
@@ -180,23 +336,23 @@ const Sidebar: React.FC<SidebarProps> = ({
                   to={item.path}
                   className={`flex items-center ${
                     collapsed ? 'justify-center' : 'justify-between'
-                  } px-4 py-2 rounded-lg transition-all duration-200 ${
+                  } px-3 py-2.5 rounded-lg transition-all duration-150 group ${
                     isActive
-                      ? 'bg-blue-50 text-blue-600 shadow-sm'
+                      ? 'bg-[#5b7cdb]/10 text-[#5b7cdb]'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   <div className="flex items-center">
-                    <span className={`${isActive ? 'text-blue-600' : 'text-gray-500'} transition-colors duration-200 w-5 h-5 ml-1`}>
+                    <span className={`${isActive ? 'text-[#5b7cdb]' : 'text-gray-400 group-hover:text-gray-600'} transition-colors duration-150 w-5 h-5`}>
                       {item.icon}
                     </span>
                     {!collapsed && (
-                      <span className={`ml-3 text-sm font-medium ${isActive ? 'text-blue-600' : 'text-gray-600'}`}>{item.title}</span>
+                      <span className={`ml-3 text-sm font-medium ${isActive ? 'text-[#5b7cdb]' : 'text-gray-700 group-hover:text-gray-900'}`}>{item.title}</span>
                     )}
                   </div>
                   
                   {!collapsed && item.badge && (
-                    <span className="inline-flex items-center justify-center w-4 h-4 text-xs font-medium rounded-full bg-blue-100 text-blue-600">
+                    <span className="inline-flex items-center justify-center min-w-[18px] h-5 px-1.5 text-xs font-semibold rounded-full bg-[#5b7cdb] text-white">
                       {item.badge}
                     </span>
                   )}
@@ -218,7 +374,36 @@ const Sidebar: React.FC<SidebarProps> = ({
         </ul>
       </nav>
 
-      <div className="mt-auto border-t border-gray-100 pt-3 pb-2">
+      <div className="mt-auto border-t border-gray-100/80 pt-4 pb-3">
+        {/* 로그아웃 버튼 */}
+        <div className={`${collapsed ? 'px-2' : 'px-4'} mb-3`}>
+          <button
+            onClick={handleLogout}
+            className={`w-full flex items-center ${
+              collapsed ? 'justify-center' : 'justify-start'
+            } px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group hover:shadow-sm`}
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-5 w-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-200" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+              />
+            </svg>
+            {!collapsed && (
+              <span className="ml-3 text-sm font-semibold">로그아웃</span>
+            )}
+          </button>
+        </div>
+
+        {/* 작업 시간 */}
         <div className="px-4 py-2 flex items-center">
           <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mr-3 ml-1">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

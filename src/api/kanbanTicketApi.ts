@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import { agileAxiosInstance } from './axiosInstance';
 import type { CreateKanbanTicketRequest, KanbanTicket } from './types';
 
 export interface UpdateKanbanTicketRequest {
@@ -12,18 +12,18 @@ export interface UpdateKanbanTicketRequest {
 export const kanbanTicketApi = {
   // 칸반 티켓 생성
   createKanbanTicket: async (data: CreateKanbanTicketRequest): Promise<KanbanTicket> => {
-    const response = await axiosInstance.post('/kanban-ticket/register', data);
+    const response = await agileAxiosInstance.post('/kanban-ticket/register', data);
     return response.data;
   },
 
   // 칸반 티켓 수정
   updateKanbanTicket: async (ticketId: number, data: UpdateKanbanTicketRequest): Promise<KanbanTicket> => {
-    const response = await axiosInstance.put(`/kanban-ticket/modify/${ticketId}`, data);
+    const response = await agileAxiosInstance.put(`/kanban-ticket/modify/${ticketId}`, data);
     return response.data;
   },
 
   // 칸반 티켓 삭제
   deleteKanbanTicket: async (ticketId: number): Promise<void> => {
-    await axiosInstance.delete(`/kanban-ticket/delete/${ticketId}`);
+    await agileAxiosInstance.delete(`/kanban-ticket/delete/${ticketId}`);
   },
 };

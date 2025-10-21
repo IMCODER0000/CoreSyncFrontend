@@ -21,11 +21,11 @@ export default function CalendarHeader({
 
     const wrapper =
         variant === "inside"
-            ? "grid grid-cols-[auto_1fr_auto] items-center gap-4 px-5 h-14 bg-white"
-            : "grid grid-cols-[auto_1fr_auto] items-center gap-4 px-5 h-14 bg-white";
+            ? "grid grid-cols-[auto_1fr_auto] items-center gap-4 px-5 h-14 bg-white border-b border-gray-200"
+            : "grid grid-cols-[auto_1fr_auto] items-center gap-4 px-5 h-14 bg-white border-b border-gray-200";
 
     const iconBtn =
-        "h-8 w-8 inline-flex items-center justify-center rounded-md text-[#9AA0A6] hover:text-[#374151] hover:bg-gray-50";
+        "h-8 w-8 inline-flex items-center justify-center rounded-lg text-gray-400 hover:text-[#5b7cdb] hover:bg-gray-50 transition-colors duration-150";
 
     const goPrev = () => {
         if (mode === "week") {
@@ -51,7 +51,7 @@ export default function CalendarHeader({
     return (
         <div className={wrapper}>
             {/* 왼쪽: Week/Month 토글 (키움) */}
-            <div className="inline-flex overflow-hidden rounded-md border border-[#E6ECF5]">
+            <div className="inline-flex overflow-hidden rounded-lg border border-gray-200 bg-white">
                 <SegmentItem active={mode === "week"} onClick={() => onModeChange("week")} label="Week"/>
                 <SegmentItem active={mode === "month"} onClick={() => onModeChange("month")} label="Month"/>
             </div>
@@ -64,7 +64,7 @@ export default function CalendarHeader({
                     </svg>
                 </button>
 
-                <h2 className="mx-1 text-[18px] font-semibold tracking-[-0.2px] text-[#1F2937]">
+                <h2 className="mx-2 text-base font-bold tracking-tight text-gray-800">
                     {yyyyMm(cursor)}
                 </h2>
 
@@ -82,7 +82,7 @@ export default function CalendarHeader({
                     color="secondary"
                     variant="outline"
                     onClick={onToday}
-                    className="h-9 rounded-full border-[#E6ECF5] text-[#374151]"
+                    className="h-8 px-4 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 text-sm font-medium transition-colors duration-150"
                 >
                     Today
                 </Button>
@@ -99,8 +99,8 @@ function SegmentItem({
             type="button"
             onClick={onClick}
             className={[
-                "px-3 h-9 text-[13px] leading-none",
-                active ? "bg-[#F3F6FF] text-[#1F3B95]" : "bg-white text-[#6B7280] hover:bg-gray-50",
+                "px-4 h-8 text-xs font-medium leading-none transition-colors duration-150",
+                active ? "bg-[#5b7cdb] text-white" : "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900",
             ].join(" ")}
         >
             {label}

@@ -1,10 +1,10 @@
-import axiosInstance from './axiosInstance';
+import { agileAxiosInstance } from './axiosInstance';
 import type { CreateAgileBoardRequest, ReadAgileBoardResponse, AgileBoard } from './types';
 
 export const agileBoardApi = {
   // 애자일 보드 생성
   createAgileBoard: async (data: CreateAgileBoardRequest): Promise<AgileBoard> => {
-    const response = await axiosInstance.post('/agile-board/register', data);
+    const response = await agileAxiosInstance.post('/agile-board/register', data);
     return response.data;
   },
 
@@ -14,7 +14,7 @@ export const agileBoardApi = {
     page: number = 1,
     perPage: number = 100
   ): Promise<ReadAgileBoardResponse> => {
-    const response = await axiosInstance.get(`/agile-board/read/${id}`, {
+    const response = await agileAxiosInstance.get(`/agile-board/read/${id}`, {
       params: { page, perPage },
     });
     return response.data;

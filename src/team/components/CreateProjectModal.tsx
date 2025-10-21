@@ -34,28 +34,28 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 배경 오버레이 */}
       <div
-        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black bg-opacity-40"
         onClick={handleClose}
       ></div>
 
       {/* 모달 */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="relative bg-white rounded-xl shadow-lg w-full max-w-md mx-4 border border-gray-200">
         {/* 헤더 */}
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+        <div className="border-b border-gray-200 p-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white bg-opacity-20 backdrop-blur-lg rounded-lg flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-10 h-10 bg-[#5b7cdb]/10 rounded-lg flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5b7cdb]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-white">새 프로젝트 만들기</h2>
+              <h2 className="text-lg font-bold text-gray-800">새 프로젝트 만들기</h2>
             </div>
             <button
               onClick={handleClose}
-              className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-1 transition-colors"
+              className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1.5 transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -63,8 +63,8 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* 내용 */}
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="mb-6">
+        <form onSubmit={handleSubmit} className="p-5">
+          <div className="mb-5">
             <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-2">
               프로젝트 이름
             </label>
@@ -74,18 +74,18 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="프로젝트 이름을 입력하세요"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5b7cdb] focus:border-[#5b7cdb] transition-colors"
               disabled={isLoading}
               autoFocus
             />
           </div>
 
           {/* 버튼 */}
-          <div className="flex items-center justify-end space-x-3">
+          <div className="flex items-center justify-end space-x-2">
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium"
               disabled={isLoading}
             >
               취소
@@ -93,7 +93,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <button
               type="submit"
               disabled={!projectName.trim() || isLoading}
-              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center"
+              className="px-4 py-2 text-sm bg-[#5b7cdb] text-white rounded-lg hover:bg-[#4a63b8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center"
             >
               {isLoading ? (
                 <>

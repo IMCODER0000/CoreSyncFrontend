@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Button, Badge } from '../../common_ui';
+import imsi1Image from '../assets/images/imsi1.png';
+
+
 const Home = () => {
     const navigate = useNavigate();
     
@@ -34,10 +37,10 @@ const Home = () => {
                 >
                     <div className="relative">
                         <div className="absolute inset-0 bg-blue-200 rounded-2xl transform rotate-3 scale-95 opacity-20 -z-10"></div>
-                        <img 
-                            src="/laptop-screenshot.png" 
+                        <img
+                            src={imsi1Image}
                             alt="서비스 이미지"
-                            className="w-full h-auto rounded-xl shadow-2xl" 
+                            className="w-full h-auto rounded-xl shadow-2xl"
                         />
                     </div>
                 </motion.div>
@@ -50,10 +53,10 @@ const Home = () => {
                 >
                     <div className="flex items-center mb-8">
                         <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg">D</div>
-                        <h1 className="text-4xl font-bold ml-3 text-gray-800">애자일론머스킁</h1>
+                        <h1 className="text-4xl font-bold ml-3 text-gray-800">Core Syncc</h1>
                     </div>
 
-                    <h2 className="text-2xl font-bold mb-5 text-gray-800">"IT관리의 마침표, 애자일론머스크"</h2>
+                    <h2 className="text-2xl font-bold mb-5 text-gray-800">"IT관리의 마침표, Core Syncc"</h2>
                     <div className="text-center">
                         <p className="text-gray-600 mb-10 leading-relaxed text-lg ">
                             IT 일정과 효율적인 관리로 작업률을 높이는<br />
@@ -62,17 +65,26 @@ const Home = () => {
                     </div>
 
                     <div className="space-y-4 w-full max-w-xs mx-auto md:mx-0">
-                        <Button variant="outline" color="primary" fullWidth className="shadow-sm">
-                            서비스 알아보기
-                        </Button>
-                        <Button 
-                            variant="filled" 
-                            color="primary" 
-                            fullWidth 
+                        <Button
+                            variant="filled"
+                            color="primary"
+                            fullWidth
                             className="shadow-md"
                             onClick={handleStartClick}
                         >
                             근태 관리 시작하기
+                        </Button>
+                        <Button
+                            variant="outline"
+                            color="primary"
+                            fullWidth
+                            className="shadow-sm"
+                            onClick={() => navigate('/guest/login')}
+                        >
+                            게스트 로그인
+                        </Button>
+                        <Button variant="outline" color="primary" fullWidth className="shadow-sm">
+                            서비스 알아보기
                         </Button>
                     </div>
 
@@ -82,7 +94,7 @@ const Home = () => {
                     </div>
                 </motion.div>
             </div>
-            
+
             <div className="fixed bottom-8 right-8">
                 <div onClick={handleClick} className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg hover:bg-blue-600 transition-colors duration-300 cursor-pointer">
                     D
