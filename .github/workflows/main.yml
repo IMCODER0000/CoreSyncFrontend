@@ -27,7 +27,7 @@ jobs:
 
       # 4. 의존성 설치
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       # 5. 빌드
       - name: Build React App
