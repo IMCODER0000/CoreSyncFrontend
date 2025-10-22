@@ -125,7 +125,7 @@ const Home = () => {
                 >
                     {/* 로고 섹션 */}
                     <motion.div 
-                        className="flex items-center mb-10 ml-8"
+                        className="flex items-center mb-10 ml-11"
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.3 }}
