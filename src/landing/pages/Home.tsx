@@ -125,7 +125,7 @@ const Home = () => {
                 >
                     {/* 로고 섹션 */}
                     <motion.div 
-                        className="flex items-center mb-10 ml-11"
+                        className="flex items-center mb-10 ml-5"
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.3 }}
@@ -137,7 +137,7 @@ const Home = () => {
                         >
                             C
                         </motion.div>
-                        <h1 className="text-5xl font-bold ml-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Core Sync</h1>
+                        <h1 className="text-6xl tracking-tight font-extrabold ml-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Core Sync</h1>
                     </motion.div>
 
                     {/* 메인 타이틀 */}
@@ -149,7 +149,7 @@ const Home = () => {
                     >
                         <div className="text-center">
                             <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-gray-800 leading-tight">
-                                IT관리의 마침표,<br />
+                                IT관리의 마침표<br />
                                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Core Sync</span>
                             </h2>
                         </div>
