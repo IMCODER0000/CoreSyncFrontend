@@ -63,8 +63,8 @@ export const dashboardApi = {
       
       // 병렬로 나머지 데이터 조회 (실패해도 계속 진행)
       const [dailyWorkTime, weekWorkTime, projectStats, myTickets] = await Promise.allSettled([
-        hrAxiosInstance.get('/hr/api/daily-work-time/today'),
-        hrAxiosInstance.get('/hr/api/daily-work-time/week'),
+        hrAxiosInstance.get('/api/daily-work-time/today'),
+        hrAxiosInstance.get('/api/daily-work-time/week'),
         agileAxiosInstance.get('/api/dashboard/project-stats'),
         agileAxiosInstance.get('/kanban-ticket/my-tickets')
       ]);
