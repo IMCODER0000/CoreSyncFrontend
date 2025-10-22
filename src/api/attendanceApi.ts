@@ -65,19 +65,19 @@ export interface DailyWorkTime {
 export const attendanceApi = {
   // 일 시작 (출근)
   checkIn: async (teamId: number): Promise<AttendanceRecord> => {
-    const response = await hrAxiosInstance.post('/api/attendance/check-in', { teamId });
+    const response = await hrAxiosInstance.post('/hr/api/attendance/check-in', { teamId });
     return response.data;
   },
 
   // 일 종료 (퇴근)
   checkOut: async (teamId: number): Promise<AttendanceRecord> => {
-    const response = await hrAxiosInstance.post('/api/attendance/check-out', { teamId });
+    const response = await hrAxiosInstance.post('/hr/api/attendance/check-out', { teamId });
     return response.data;
   },
 
   // 근태 목록 조회
   getAttendanceList: async (teamId: number, year: number, month: number): Promise<AttendanceRecord[]> => {
-    const response = await hrAxiosInstance.get('/api/attendance/list', {
+    const response = await hrAxiosInstance.get('/hr/api/attendance/list', {
       params: { teamId, year, month }
     });
     return response.data;
@@ -85,7 +85,7 @@ export const attendanceApi = {
 
   // 오늘의 근태 조회
   getTodayAttendance: async (teamId: number): Promise<AttendanceRecord | null> => {
-    const response = await hrAxiosInstance.get('/api/attendance/today', {
+    const response = await hrAxiosInstance.get('/hr/api/attendance/today', {
       params: { teamId }
     });
     return response.data;
@@ -93,7 +93,7 @@ export const attendanceApi = {
 
   // 연차 신청
   applyLeave: async (teamId: number, startDate: string, endDate: string, reason: string): Promise<AnnualLeave> => {
-    const response = await hrAxiosInstance.post('/api/attendance/leave/apply', {
+    const response = await hrAxiosInstance.post('/hr/api/attendance/leave/apply', {
       teamId,
       startDate,
       endDate,
@@ -104,7 +104,7 @@ export const attendanceApi = {
 
   // 연차 목록 조회
   getLeaveList: async (teamId: number): Promise<AnnualLeave[]> => {
-    const response = await hrAxiosInstance.get('/api/attendance/leave/list', {
+    const response = await hrAxiosInstance.get('/hr/api/attendance/leave/list', {
       params: { teamId }
     });
     return response.data;
@@ -112,7 +112,7 @@ export const attendanceApi = {
 
   // 연차 통계
   getLeaveStats: async (teamId: number): Promise<LeaveStats> => {
-    const response = await hrAxiosInstance.get('/api/attendance/leave/stats', {
+    const response = await hrAxiosInstance.get('/hr/api/attendance/leave/stats', {
       params: { teamId }
     });
     return response.data;
@@ -120,7 +120,7 @@ export const attendanceApi = {
 
   // 연차 승인/거절
   approveLeave: async (leaveId: number, approved: boolean): Promise<AnnualLeave> => {
-    const response = await hrAxiosInstance.post(`/api/attendance/leave/${leaveId}/approve`, {
+    const response = await hrAxiosInstance.post(`/hr/api/attendance/leave/${leaveId}/approve`, {
       approved
     });
     return response.data;
@@ -128,19 +128,30 @@ export const attendanceApi = {
 
   // 오늘의 총 작업 시간 조회
   getTodayTotalWorkTime: async (): Promise<DailyWorkTime> => {
-    const response = await hrAxiosInstance.get('/api/daily-work-time/today');
-    return response.data;
+    try {
+      const response = await hrAxiosInstance.get('/hr/api/daily-work-time/today');
+      return response.data;
+    } catch (error: any) {
+      console.error('총 작업 시간 로드 실패:', error);
+      // Redis 연결 실패 등의 서버 에러 시 기본값 반환
+      return {
+        accountId: 0,
+        date: new Date().toISOString().split('T')[0],
+        totalSeconds: 0,
+        totalHours: 0
+      };
+    }
   },
 
   // 팀장용: 팀 전체 연차 신청 목록 조회
   getTeamLeaveList: async (teamId: number): Promise<AnnualLeave[]> => {
-    const response = await hrAxiosInstance.get(`/api/attendance/leave/team/${teamId}`);
+    const response = await hrAxiosInstance.get(`/hr/api/attendance/leave/team/${teamId}`);
     return response.data;
   },
 
   // 팀장용: 특정 팀원의 근태 목록 조회
   getMemberAttendanceList: async (teamId: number, accountId: number, year: number, month: number): Promise<AttendanceRecord[]> => {
-    const response = await hrAxiosInstance.get(`/api/attendance/member/${accountId}/list`, {
+    const response = await hrAxiosInstance.get(`/hr/api/attendance/member/${accountId}/list`, {
       params: { teamId, year, month }
     });
     return response.data;

@@ -77,67 +77,67 @@ export interface TeamMemberResponse {
 export const hrApi = {
   // 팀 목록 조회
   getTeamList: async (): Promise<TeamResponse[]> => {
-    const response = await hrAxiosInstance.get('/api/team/list');
+    const response = await hrAxiosInstance.get('/hr/api/team/list');
     return response.data;
   },
 
   // 팀 생성
   createTeam: async (data: { name: string }): Promise<TeamResponse> => {
-    const response = await hrAxiosInstance.post('/api/team/register', data);
+    const response = await hrAxiosInstance.post('/hr/api/team/register', data);
     return response.data;
   },
 
   // 팀 상세 조회
   getTeam: async (teamId: number): Promise<TeamResponse> => {
-    const response = await hrAxiosInstance.get(`/api/team/${teamId}`);
+    const response = await hrAxiosInstance.get(`/hr/api/team/${teamId}`);
     return response.data;
   },
 
   // 팀 정보 수정
   updateTeam: async (teamId: number, data: TeamUpdateRequest): Promise<TeamResponse> => {
-    const response = await hrAxiosInstance.put(`/api/team/${teamId}`, data);
+    const response = await hrAxiosInstance.put(`/hr/api/team/${teamId}`, data);
     return response.data;
   },
 
   // 팀장 여부 확인
   isTeamLeader: async (teamId: number): Promise<boolean> => {
-    const response = await hrAxiosInstance.get(`/api/team/${teamId}/is-leader`);
+    const response = await hrAxiosInstance.get(`/hr/api/team/${teamId}/is-leader`);
     return response.data.isLeader;
   },
 
   // 팀 멤버 목록 조회
   getTeamMembers: async (teamId: number): Promise<TeamMemberResponse[]> => {
-    const response = await hrAxiosInstance.get(`/api/team/${teamId}/members`);
+    const response = await hrAxiosInstance.get(`/hr/api/team/${teamId}/members`);
     return response.data;
   },
 
   // 팀 멤버 제거
   removeMember: async (teamId: number, memberId: number): Promise<{ message: string }> => {
-    const response = await hrAxiosInstance.delete(`/api/team/${teamId}/member/${memberId}`);
+    const response = await hrAxiosInstance.delete(`/hr/api/team/${teamId}/member/${memberId}`);
     return response.data;
   },
 
   // 팀 프로젝트 생성
   createTeamProject: async (teamId: number, data: { title: string }): Promise<any> => {
-    const response = await hrAxiosInstance.post(`/api/team/${teamId}/project/register`, data);
+    const response = await hrAxiosInstance.post(`/hr/api/team/${teamId}/project/register`, data);
     return response.data;
   },
 
   // 팀 멤버 초대
   inviteMember: async (teamId: number, email: string): Promise<{ message: string }> => {
-    const response = await hrAxiosInstance.post(`/api/team/${teamId}/invite`, { email });
+    const response = await hrAxiosInstance.post(`/hr/api/team/${teamId}/invite`, { email });
     return response.data;
   },
 
   // 팀 삭제 (팀장만 가능)
   deleteTeam: async (teamId: number): Promise<{ message: string }> => {
-    const response = await hrAxiosInstance.delete(`/api/team/${teamId}`);
+    const response = await hrAxiosInstance.delete(`/hr/api/team/${teamId}`);
     return response.data;
   },
 
   // 팀 탈퇴
   leaveTeam: async (teamId: number): Promise<{ message: string }> => {
-    const response = await hrAxiosInstance.post(`/api/team/${teamId}/leave`);
+    const response = await hrAxiosInstance.post(`/hr/api/team/${teamId}/leave`);
     return response.data;
   },
 

@@ -63,8 +63,8 @@ export const dashboardApi = {
       
       // 병렬로 나머지 데이터 조회 (실패해도 계속 진행)
       const [dailyWorkTime, weekWorkTime, projectStats, myTickets] = await Promise.allSettled([
-        hrAxiosInstance.get('/api/daily-work-time/today'),
-        hrAxiosInstance.get('/api/daily-work-time/week'),
+        hrAxiosInstance.get('/hr/api/daily-work-time/today'),
+        hrAxiosInstance.get('/hr/api/daily-work-time/week'),
         agileAxiosInstance.get('/api/dashboard/project-stats'),
         agileAxiosInstance.get('/kanban-ticket/my-tickets')
       ]);
@@ -96,6 +96,10 @@ export const dashboardApi = {
       const todayWorkHours = dailyWorkTime.status === 'fulfilled'
         ? (dailyWorkTime.value.data.totalHours || 0)
         : 0;
+      
+      if (dailyWorkTime.status === 'rejected') {
+        console.warn('오늘 작업 시간 조회 실패 (HR Service Redis 연결 문제 가능성):', dailyWorkTime.reason.message);
+      }
 
       // 주간 작업 시간 (서버에서 가져온 데이터)
       const weekWorkHours = [0, 0, 0, 0, 0, 0, 0];
@@ -105,6 +109,8 @@ export const dashboardApi = {
           const dayOfWeek = date.getDay();
           weekWorkHours[dayOfWeek] = day.totalHours || 0;
         });
+      } else if (weekWorkTime.status === 'rejected') {
+        console.warn('주간 작업 시간 조회 실패 (HR Service Redis 연결 문제 가능성):', weekWorkTime.reason.message);
       }
 
       // 내 백로그 및 진행 중인 작업 통계
