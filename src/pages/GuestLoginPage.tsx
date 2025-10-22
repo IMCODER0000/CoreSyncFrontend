@@ -21,8 +21,8 @@ const GuestLoginPage: React.FC = () => {
     try {
       const baseUrl = import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001';
       const url = isLogin
-        ? `${baseUrl}/guest/login`
-        : `${baseUrl}/guest/register`;
+        ? `${baseUrl}/api/account/guest/login`
+        : `${baseUrl}/api/account/guest/register`;
 
       const payload = isLogin
         ? { email: formData.email, loginCode: formData.loginCode }

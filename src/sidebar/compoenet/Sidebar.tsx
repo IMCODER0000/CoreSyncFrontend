@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import TeamDropdown from './TeamDropdown';
 import CreateTeamModal from './CreateTeamModal';
 import type { Team } from '../types/team.types';
@@ -329,107 +330,175 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <div 
-      className={`bg-white flex flex-col h-screen transition-all duration-300 shadow-sm border-r border-gray-200 ${
+    <motion.div 
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className={`bg-gradient-to-b from-white via-blue-50/30 to-indigo-50/30 backdrop-blur-xl flex flex-col h-screen transition-all duration-300 shadow-xl border-r border-indigo-100/50 ${
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
       {/* 로고 및 사용자 정보 섹션 */}
       <div className={`${collapsed ? 'px-2' : 'px-5'} py-5 mb-2`}>
         {/* 로고 */}
-        <div className={`flex items-center ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-9 h-9 rounded-lg bg-[#5b7cdb] flex items-center justify-center shadow-sm">
+        <motion.div 
+          className={`flex items-center ${collapsed ? 'justify-center' : ''}`}
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 400 }}
+        >
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300">
             <span className="text-white font-bold text-base">C</span>
           </div>
           {!collapsed && (
-            <span className="ml-3 text-base font-bold text-gray-800">CoreSync</span>
+            <span className="ml-3 text-base font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">CoreSync</span>
           )}
-        </div>
+        </motion.div>
         
         {/* 사용자 정보 카드 */}
-        {!collapsed && (
-          <div className="mt-4 p-3.5 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center space-x-3">
-              {/* 프로필 아바타 */}
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-[#5b7cdb] flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">
-                    {userNickname.charAt(0).toUpperCase()}
-                  </span>
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ delay: 0.1 }}
+              className="mt-4 p-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-indigo-100/50 shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <div className="flex items-center space-x-3">
+                {/* 프로필 아바타 */}
+                <div className="relative">
+                  <motion.div 
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md"
+                  >
+                    <span className="text-white font-bold text-sm">
+                      {userNickname.charAt(0).toUpperCase()}
+                    </span>
+                  </motion.div>
+                  <motion.div 
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white shadow-sm"
+                  ></motion.div>
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#52c17c] rounded-full border-2 border-white"></div>
+              
+                {/* 사용자 정보 */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-gray-800 truncate">
+                    {userNickname}
+                  </p>
+                  <p className="text-xs text-gray-500 flex items-center mt-1">
+                    <motion.span 
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1.5"
+                    ></motion.span>
+                    활동 중
+                  </p>
+                </div>
               </div>
               
-              {/* 사용자 정보 */}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-800 truncate">
-                  {userNickname}
-                </p>
-                <p className="text-xs text-gray-500 flex items-center mt-1">
-                  <span className="w-1.5 h-1.5 bg-[#52c17c] rounded-full mr-1.5"></span>
-                  활동 중
-                </p>
+              {/* 오늘의 총 작업 시간 */}
+              <div className="mt-3 pt-3 border-t border-indigo-100/50">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-gray-600">오늘 작업 시간</span>
+                  <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{totalWorkTime}</span>
+                </div>
               </div>
-            </div>
-            
-            {/* 오늘의 총 작업 시간 */}
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">오늘 작업 시간</span>
-                <span className="text-sm font-semibold text-[#5b7cdb]">{totalWorkTime}</span>
-              </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         {/* collapsed 상태일 때 작은 아바타만 표시 */}
-        {collapsed && (
-          <div className="mt-4 flex justify-center">
-            <div className="relative">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 flex items-center justify-center shadow-lg ring-2 ring-white hover:ring-indigo-200 transition-all duration-300">
-                <span className="text-white font-bold text-xs">
-                  {userNickname.charAt(0).toUpperCase()}
-                </span>
+        <AnimatePresence>
+          {collapsed && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="mt-4 flex justify-center"
+            >
+              <div className="relative">
+                <motion.div 
+                  whileHover={{ scale: 1.15, rotate: 5 }}
+                  className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg ring-2 ring-white hover:ring-indigo-200 transition-all duration-300"
+                >
+                  <span className="text-white font-bold text-xs">
+                    {userNickname.charAt(0).toUpperCase()}
+                  </span>
+                </motion.div>
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-sm"
+                ></motion.div>
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-sm"></div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <nav className="flex-1 px-3 py-3">
-        <ul className="space-y-1">
-          {navItems.map((item) => {
+        <ul className="space-y-1.5">
+          {navItems.map((item, index) => {
             const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
             
             return (
-              <li key={item.id}>
+              <motion.li 
+                key={item.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
                 <Link
                   to={item.path}
                   className={`flex items-center ${
                     collapsed ? 'justify-center' : 'justify-between'
-                  } px-3 py-2.5 rounded-lg transition-all duration-150 group ${
+                  } px-3 py-2.5 rounded-xl transition-all duration-200 group relative overflow-hidden ${
                     isActive
-                      ? 'bg-[#5b7cdb]/10 text-[#5b7cdb]'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 shadow-sm'
+                      : 'text-gray-600 hover:bg-white/60 hover:shadow-md'
                   }`}
                 >
-                  <div className="flex items-center">
-                    <span className={`${isActive ? 'text-[#5b7cdb]' : 'text-gray-400 group-hover:text-gray-600'} transition-colors duration-150 w-5 h-5`}>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                  <div className="flex items-center relative z-10">
+                    <motion.span 
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      className={`${isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-500'} transition-colors duration-200 w-5 h-5`}
+                    >
                       {item.icon}
-                    </span>
-                    {!collapsed && (
-                      <span className={`ml-3 text-sm font-medium ${isActive ? 'text-[#5b7cdb]' : 'text-gray-700 group-hover:text-gray-900'}`}>{item.title}</span>
-                    )}
+                    </motion.span>
+                    <AnimatePresence>
+                      {!collapsed && (
+                        <motion.span 
+                          initial={{ opacity: 0, x: -5 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -5 }}
+                          className={`ml-3 text-sm font-semibold ${isActive ? 'text-indigo-600' : 'text-gray-700 group-hover:text-gray-900'}`}
+                        >
+                          {item.title}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </div>
                   
                   {!collapsed && item.badge && (
-                    <span className="inline-flex items-center justify-center min-w-[18px] h-5 px-1.5 text-xs font-semibold rounded-full bg-[#5b7cdb] text-white">
+                    <motion.span 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="inline-flex items-center justify-center min-w-[20px] h-5 px-2 text-xs font-bold rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md relative z-10"
+                    >
                       {item.badge}
-                    </span>
+                    </motion.span>
                   )}
                 </Link>
-              </li>
+              </motion.li>
             );
           })}
           
@@ -446,21 +515,29 @@ const Sidebar: React.FC<SidebarProps> = ({
         </ul>
       </nav>
 
-      <div className="mt-auto border-t border-gray-100/80 pt-4 pb-3">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mt-auto border-t border-indigo-100/50 pt-4 pb-3 bg-gradient-to-t from-white/50 to-transparent backdrop-blur-sm"
+      >
         {/* 로그아웃 버튼 */}
         <div className={`${collapsed ? 'px-2' : 'px-4'} mb-3`}>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={handleLogout}
             className={`w-full flex items-center ${
               collapsed ? 'justify-center' : 'justify-start'
-            } px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group hover:shadow-sm`}
+            } px-3 py-2.5 rounded-xl text-red-500 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 hover:text-red-600 transition-all duration-200 group hover:shadow-lg border border-transparent hover:border-red-200`}
           >
-            <svg 
+            <motion.svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-200" 
+              className="h-5 w-5" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
+              whileHover={{ scale: 1.1, rotate: 6 }}
             >
               <path 
                 strokeLinecap="round" 
@@ -468,64 +545,111 @@ const Sidebar: React.FC<SidebarProps> = ({
                 strokeWidth={2} 
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
               />
-            </svg>
-            {!collapsed && (
-              <span className="ml-3 text-sm font-semibold">로그아웃</span>
-            )}
-          </button>
+            </motion.svg>
+            <AnimatePresence>
+              {!collapsed && (
+                <motion.span 
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -5 }}
+                  className="ml-3 text-sm font-bold"
+                >
+                  로그아웃
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
         </div>
 
         {/* 작업 시간 */}
-        <div className="px-4 py-2 flex items-center">
-          <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mr-3 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
+        <AnimatePresence>
           {!collapsed && (
-            <div>
-              <div className="text-xs text-gray-500">작업 시간</div>
-              <div className="text-sm font-bold text-gray-800">00:05:09</div>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="px-4 py-3 mx-3 mb-2 rounded-xl bg-white/60 backdrop-blur-sm border border-indigo-100/50 shadow-sm"
+            >
+              <div className="flex items-center">
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white mr-3 shadow-md"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </motion.div>
+                <div>
+                  <div className="text-xs font-medium text-gray-600">작업 시간</div>
+                  <div className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{totalWorkTime}</div>
+                </div>
+              </div>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
         
         {collapsed ? (
           <div className="flex justify-center mt-1">
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={onToggleCollapse}
-              className="p-1 text-gray-400 hover:text-blue-600 transition-colors duration-200"
+              className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
               </svg>
-            </button>
+            </motion.button>
           </div>
         ) : (
           <div className="px-4 mt-1">
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={onToggleCollapse}
-              className="flex items-center justify-center w-full py-1 text-xs text-gray-500 hover:text-blue-600 transition-colors duration-200"
+              className="flex items-center justify-center w-full py-2 text-xs font-medium text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
               </svg>
               <span>사이드바 접기</span>
-            </button>
+            </motion.button>
           </div>
         )}
-      </div>
+      </motion.div>
       
-      <div className="border-t border-gray-100 py-2 px-4">
-        <Link to="/profile" className="flex items-center text-gray-600 hover:text-blue-600 transition-colors duration-200">
-          <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center mr-3 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="border-t border-indigo-100/50 py-3 px-4 bg-white/40 backdrop-blur-sm"
+      >
+        <Link to="/profile" className={`flex items-center text-gray-600 hover:text-indigo-600 transition-all duration-200 ${
+          collapsed ? 'justify-center' : ''
+        } px-2 py-2 rounded-lg hover:bg-indigo-50`}>
+          <motion.div 
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center mr-3"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-          </div>
-          {!collapsed && <span className="text-xs">마이페이지</span>}
+          </motion.div>
+          <AnimatePresence>
+            {!collapsed && (
+              <motion.span 
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -5 }}
+                className="text-xs font-semibold"
+              >
+                마이페이지
+              </motion.span>
+            )}
+          </AnimatePresence>
         </Link>
-      </div>
+      </motion.div>
 
       {/* 팀 생성 모달 */}
       <CreateTeamModal
@@ -534,7 +658,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         onSubmit={handleCreateTeamSubmit}
         isLoading={isCreatingTeam}
       />
-    </div>
+    </motion.div>
   );
 };
 
