@@ -61,15 +61,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           console.log(`[Sidebar] 팀 ${team.id}의 프로젝트 조회 시작`);
           try {
             const projectsResponse = await projectApi.getTeamProjects(team.id);
+            console.log(`[Sidebar] 팀 ${team.id}의 프로젝트 응답:`, projectsResponse);
             const projects = projectsResponse.projectList.map((p: any) => ({
               id: p.id,
               name: p.title,
             }));
             console.log(`[Sidebar] 팀 ${team.id}의 프로젝트:`, projects);
             return { ...team, projects };
-          } catch (error) {
+          } catch (error: any) {
             console.error(`[Sidebar] 팀 ${team.id}의 프로젝트 조회 실패:`, error);
-            return team;
+            console.error(`[Sidebar] 에러 상세:`, error.response?.data);
+            // 에러 발생 시 빈 프로젝트 배열로 반환
+            return { ...team, projects: [] };
           }
         })
       );
@@ -147,14 +150,27 @@ const Sidebar: React.FC<SidebarProps> = ({
     
     // 작업 상태 변경 이벤트 리스너
     const handleWorkStatusChange = () => {
-      console.log('작업 상태 변경 감지');
+      console.log('[Sidebar] 작업 상태 변경 감지');
       loadTotalWorkTime();
     };
+    
+    // 팀/프로젝트 생성 이벤트 리스너
+    const handleTeamCreated = () => {
+      console.log('[Sidebar] 팀/프로젝트 생성 감지 - 팀 목록 새로고침');
+      fetchTeams();
+    };
+    
     window.addEventListener('workStatusChanged', handleWorkStatusChange);
+    window.addEventListener('teamCreated', handleTeamCreated);
+    window.addEventListener('projectCreated', handleTeamCreated);
+    window.addEventListener('boardCreated', handleTeamCreated);
     
     return () => {
       clearInterval(interval);
       window.removeEventListener('workStatusChanged', handleWorkStatusChange);
+      window.removeEventListener('teamCreated', handleTeamCreated);
+      window.removeEventListener('projectCreated', handleTeamCreated);
+      window.removeEventListener('boardCreated', handleTeamCreated);
     };
   }, []);
 

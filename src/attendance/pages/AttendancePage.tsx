@@ -629,14 +629,14 @@ const AttendancePage: React.FC = () => {
                               
                               await loadAttendanceList();
                               
-                              // localStorage 정리 (마지막에)
-                              localStorage.removeItem('currentWorkingTeam');
-                              localStorage.removeItem('sessionStartTime');
+                              // Sidebar에 알림 먼저 (서버 데이터 업데이트 완료 후)
+                              window.dispatchEvent(new Event('workStatusChanged'));
                               
-                              // Sidebar에 알림 (모든 업데이트 완료 후, 약간의 지연)
+                              // localStorage 정리 (Sidebar가 업데이트된 후)
                               setTimeout(() => {
-                                window.dispatchEvent(new Event('workStatusChanged'));
-                              }, 100);
+                                localStorage.removeItem('currentWorkingTeam');
+                                localStorage.removeItem('sessionStartTime');
+                              }, 500);
                             } catch (error) {
                               console.error('일 종료 실패:', error);
                               alert('일 종료에 실패했습니다.');

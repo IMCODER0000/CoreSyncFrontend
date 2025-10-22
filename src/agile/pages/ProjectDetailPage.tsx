@@ -61,6 +61,9 @@ const ProjectDetailPage = () => {
       setOpenDialog(false);
       setNewBoardTitle('');
       loadProjectDetail();
+      
+      // Sidebar에 보드 생성 알림
+      window.dispatchEvent(new Event('boardCreated'));
     } catch (error: any) {
       console.error('애자일 보드 생성 실패:', error);
       console.error('에러 응답:', error.response?.data);

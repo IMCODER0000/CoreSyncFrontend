@@ -32,8 +32,17 @@ export const projectApi = {
 
   // 팀 프로젝트 목록 조회
   getTeamProjects: async (teamId: number): Promise<ListProjectResponse> => {
-    const response = await agileAxiosInstance.get(`/project/team/${teamId}`);
-    return response.data;
+    console.log('[projectApi] getTeamProjects 호출 - teamId:', teamId);
+    try {
+      const response = await agileAxiosInstance.get(`/project/team/${teamId}`);
+      console.log('[projectApi] getTeamProjects 응답:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('[projectApi] getTeamProjects 실패:', error);
+      console.error('[projectApi] 에러 응답:', error.response?.data);
+      console.error('[projectApi] 에러 상태:', error.response?.status);
+      throw error;
+    }
   },
 
   // GitHub 저장소 연동

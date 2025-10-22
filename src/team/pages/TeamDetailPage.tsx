@@ -62,6 +62,9 @@ const TeamDetailPage: React.FC = () => {
       // 프로젝트 생성 후 팀 데이터 재조회
       await fetchTeamData();
       setIsCreateModalOpen(false);
+      
+      // Sidebar에 프로젝트 생성 알림
+      window.dispatchEvent(new Event('projectCreated'));
     } catch (error) {
       console.error('프로젝트 생성 실패:', error);
       alert('프로젝트 생성에 실패했습니다.');
