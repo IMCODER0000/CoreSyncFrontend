@@ -18,7 +18,7 @@ const GithubCallbackPage: React.FC = () => {
 
       try {
         // GitHub 로그인 처리
-        const response = await axios.get(`http://localhost:8001/github-authentication/login?code=${code}`);
+        const response = await axios.get(`${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/account/github-authentication/login?code=${code}`);
         
         if (response.data && response.data.userToken) {
           // 토큰 저장
