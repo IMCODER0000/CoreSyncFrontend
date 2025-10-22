@@ -30,6 +30,10 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const goHome = () => {
+    window.location.href="/";
+  }
+
 
   const completeLogin = (provider: string) => {
     // 약관에 동의한 후 로그인 처리
@@ -69,7 +73,7 @@ const LoginPage: React.FC = () => {
                 <div className="absolute inset-0 bg-black/5"></div>
                 <div className="relative z-10">
                   <div className="w-24 h-24 rounded-2xl bg-white/95 backdrop-blur-sm flex items-center justify-center font-bold text-4xl shadow-2xl mx-auto transform hover:scale-105 transition-transform duration-300">
-                    <span className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">C</span>
+                    <span onClick={goHome} className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">C</span>
                   </div>
                   <h1 className="text-3xl font-bold text-white mt-6 tracking-tight">CoreSync</h1>
                   <p className="text-white/90 mt-3 text-base font-medium">IT 관리의 마침표</p>
