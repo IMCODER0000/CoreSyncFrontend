@@ -60,19 +60,16 @@ const TeamDetailPage: React.FC = () => {
       const response = await teamApi.createTeamProject(Number(teamId), { title: projectName });
       console.log('프로젝트 생성 성공:', response);
       
-      // 약간의 지연 후 프로젝트 목록 다시 조회 (서버 커밋 대기)
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // 생성된 프로젝트를 즉시 목록에 추가
+      const newProject = {
+        id: response.projectId,
+        name: response.title,
+      };
       
-      // 프로젝트 목록만 다시 조회
-      const projectsResponse = await projectApi.getTeamProjects(Number(teamId));
-      const projects = projectsResponse.projectList.map((p: any) => ({
-        id: p.id,
-        name: p.title,
-      }));
-      
-      // 팀 상태 업데이트
       if (team) {
-        setTeam({ ...team, projects });
+        const updatedProjects = [...(team.projects || []), newProject];
+        setTeam({ ...team, projects: updatedProjects });
+        console.log('프로젝트 목록에 즉시 추가:', newProject);
       }
       
       setIsCreateModalOpen(false);

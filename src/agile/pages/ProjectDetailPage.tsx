@@ -58,12 +58,25 @@ const ProjectDetailPage = () => {
         title: newBoardTitle,
       });
       console.log('보드 생성 응답:', response);
+      
+      // 생성된 보드를 즉시 목록에 추가
+      const newBoard = {
+        id: response.id,
+        title: response.title,
+        projectId: Number(projectId),
+        writer: response.writer || {
+          id: 0,
+          nickname: '나'
+        },
+        createDate: new Date().toISOString(),
+        updateDate: new Date().toISOString()
+      };
+      
+      setAgileBoards(prev => [...prev, newBoard]);
+      console.log('보드 목록에 즉시 추가:', newBoard);
+      
       setOpenDialog(false);
       setNewBoardTitle('');
-      
-      // 약간의 지연 후 프로젝트 상세 다시 조회 (서버 커밋 대기)
-      await new Promise(resolve => setTimeout(resolve, 300));
-      await loadProjectDetail();
       
       // Sidebar에 보드 생성 알림
       window.dispatchEvent(new Event('boardCreated'));

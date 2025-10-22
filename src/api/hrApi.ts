@@ -20,18 +20,29 @@ const accountAxiosInstance = axios.create({
 hrAxiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('userToken');
-    console.log('[HR API] 요청 URL:', config.url);
-    console.log('[HR API] 토큰 존재 여부:', !!token);
-    console.log('[HR API] 토큰 값:', token);
+    console.log('[HR API] 요청:', config.method?.toUpperCase(), config.url);
+    console.log('[HR API] 토큰:', token ? token.substring(0, 20) + '...' : 'NONE');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('[HR API] Authorization 헤더 설정됨:', config.headers.Authorization);
     } else {
-      console.warn('[HR API] 토큰이 없어서 Authorization 헤더를 설정하지 않음');
+      console.warn('[HR API] ⚠️ 토큰이 없습니다!');
     }
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 응답 인터셉터 (HR)
+hrAxiosInstance.interceptors.response.use(
+  (response) => {
+    console.log('[HR API] 응답:', response.config.url, '→', response.status);
+    return response;
+  },
+  (error) => {
+    console.error('[HR API] 에러:', error.config?.url, '→', error.response?.status || error.message);
+    console.error('[HR API] 에러 상세:', error.response?.data);
     return Promise.reject(error);
   }
 );

@@ -19,12 +19,16 @@ const agileAxiosInstance = axios.create({
 });
 
 // 공통 요청 인터셉터 설정 함수
-const setupRequestInterceptor = (instance: AxiosInstance) => {
+const setupRequestInterceptor = (instance: AxiosInstance, serviceName: string) => {
   instance.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('userToken');
+      console.log(`[${serviceName}] 요청:`, config.method?.toUpperCase(), config.url);
+      console.log(`[${serviceName}] 토큰:`, token ? token.substring(0, 20) + '...' : 'NONE');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.warn(`[${serviceName}] ⚠️ 토큰이 없습니다!`);
       }
       return config;
     },
@@ -35,10 +39,17 @@ const setupRequestInterceptor = (instance: AxiosInstance) => {
 };
 
 // 공통 응답 인터셉터 설정 함수
-const setupResponseInterceptor = (instance: AxiosInstance) => {
+const setupResponseInterceptor = (instance: AxiosInstance, serviceName: string) => {
   instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      console.log(`[${serviceName}] 응답:`, response.config.url, '→', response.status);
+      console.log(`[${serviceName}] 응답 데이터:`, response.data);
+      return response;
+    },
     (error) => {
+      console.error(`[${serviceName}] 에러:`, error.config?.url, '→', error.response?.status || error.message);
+      console.error(`[${serviceName}] 에러 상세:`, error.response?.data);
+      
       if (error.response?.status === 401) {
         // GitHub API 호출인 경우는 로그아웃 처리하지 않음
         const isGithubApi = error.config?.url?.includes('/api/github');
@@ -56,10 +67,10 @@ const setupResponseInterceptor = (instance: AxiosInstance) => {
 };
 
 // 인터셉터 적용
-setupRequestInterceptor(accountAxiosInstance);
-setupRequestInterceptor(agileAxiosInstance);
-setupResponseInterceptor(accountAxiosInstance);
-setupResponseInterceptor(agileAxiosInstance);
+setupRequestInterceptor(accountAxiosInstance, 'Account API');
+setupRequestInterceptor(agileAxiosInstance, 'Agile API');
+setupResponseInterceptor(accountAxiosInstance, 'Account API');
+setupResponseInterceptor(agileAxiosInstance, 'Agile API');
 
 // 하위 호환성을 위한 기본 export (Account Service 사용)
 export default accountAxiosInstance;

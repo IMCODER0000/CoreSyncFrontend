@@ -34,28 +34,11 @@ const AttendancePage: React.FC = () => {
   const [monthStats, setMonthStats] = useState({ presentDays: 0, leaveDays: 0, avgWorkHours: 0 });
   const [currentWorkTime, setCurrentWorkTime] = useState<string>('0:00:00');
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
-  const [shouldCleanupLocalStorage, setShouldCleanupLocalStorage] = useState(false);
   
   // 팀 목록 로드
   useEffect(() => {
     loadTeams();
-    
-    // Sidebar가 작업 시간을 업데이트한 후 localStorage 정리
-    const handleSidebarUpdated = () => {
-      if (shouldCleanupLocalStorage) {
-        console.log('[AttendancePage] Sidebar 업데이트 완료 - localStorage 정리');
-        localStorage.removeItem('currentWorkingTeam');
-        localStorage.removeItem('sessionStartTime');
-        setShouldCleanupLocalStorage(false);
-      }
-    };
-    
-    window.addEventListener('sidebarWorkTimeUpdated', handleSidebarUpdated);
-    
-    return () => {
-      window.removeEventListener('sidebarWorkTimeUpdated', handleSidebarUpdated);
-    };
-  }, [shouldCleanupLocalStorage]);
+  }, []);
   
   // 선택한 팀이 변경되면 팀장 여부 확인 후 데이터 로드
   useEffect(() => {
@@ -646,12 +629,23 @@ const AttendancePage: React.FC = () => {
                               
                               await loadAttendanceList();
                               
-                              // localStorage 정리 플래그 설정
-                              setShouldCleanupLocalStorage(true);
+                              // Sidebar에 누적 시간 데이터와 함께 이벤트 발생
+                              const totalSeconds = Math.floor((result.workHours || 0) * 3600);
+                              console.log('Sidebar에 전달할 totalSeconds:', totalSeconds);
                               
-                              // Sidebar에 알림 (서버 데이터 업데이트 완료 후)
-                              // Sidebar가 서버에서 데이터를 가져온 후 sidebarWorkTimeUpdated 이벤트를 발생시킴
-                              window.dispatchEvent(new Event('workStatusChanged'));
+                              const event = new CustomEvent('workStatusChanged', {
+                                detail: {
+                                  totalSeconds: totalSeconds,
+                                  isWorking: false
+                                }
+                              });
+                              window.dispatchEvent(event);
+                              
+                              // localStorage 정리 (약간의 지연 후)
+                              setTimeout(() => {
+                                localStorage.removeItem('currentWorkingTeam');
+                                localStorage.removeItem('sessionStartTime');
+                              }, 500);
                             } catch (error) {
                               console.error('일 종료 실패:', error);
                               alert('일 종료에 실패했습니다.');
