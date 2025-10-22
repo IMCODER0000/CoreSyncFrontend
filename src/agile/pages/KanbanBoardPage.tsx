@@ -261,8 +261,12 @@ const KanbanBoardPage = () => {
         updateDate: (response as any).updateDate || new Date().toISOString()
       };
       console.log('생성된 티켓 객체:', newTicket);
+      
+      // 티켓을 즉시 목록에 추가
+      setTickets(prev => [...prev, newTicket]);
+      console.log('티켓 목록에 즉시 추가:', newTicket);
+      
       setSelectedTicket(newTicket);
-      await loadBoardDetail();
       setIsDrawerOpen(true);
     } catch (error: any) {
       console.error('티켓 생성 실패:', error);

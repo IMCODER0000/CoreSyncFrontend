@@ -184,10 +184,19 @@ const Sidebar: React.FC<SidebarProps> = ({
       fetchTeams();
     };
     
+    // 팀 삭제 이벤트 리스너
+    const handleTeamDeleted = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { teamId } = customEvent.detail;
+      console.log('[Sidebar] 팀 삭제 감지 - teamId:', teamId);
+      setTeams(prev => prev.filter(team => team.id !== teamId));
+    };
+    
     window.addEventListener('workStatusChanged', handleWorkStatusChange);
     window.addEventListener('teamCreated', handleTeamCreated);
     window.addEventListener('projectCreated', handleTeamCreated);
     window.addEventListener('boardCreated', handleTeamCreated);
+    window.addEventListener('teamDeleted', handleTeamDeleted);
     
     return () => {
       clearInterval(interval);
@@ -195,6 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       window.removeEventListener('teamCreated', handleTeamCreated);
       window.removeEventListener('projectCreated', handleTeamCreated);
       window.removeEventListener('boardCreated', handleTeamCreated);
+      window.removeEventListener('teamDeleted', handleTeamDeleted);
     };
   }, []);
 

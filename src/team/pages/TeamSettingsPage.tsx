@@ -148,6 +148,13 @@ const TeamSettingsPage: React.FC = () => {
     try {
       await hrApi.deleteTeam(team.id);
       alert('팀이 삭제되었습니다.');
+      
+      // Sidebar에 팀 삭제 이벤트 발생
+      const event = new CustomEvent('teamDeleted', {
+        detail: { teamId: team.id }
+      });
+      window.dispatchEvent(event);
+      
       navigate('/workspace');
     } catch (error: any) {
       console.error('팀 삭제 실패:', error);
