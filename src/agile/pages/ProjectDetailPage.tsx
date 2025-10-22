@@ -49,14 +49,27 @@ const ProjectDetailPage = () => {
   };
 
   const handleCreateBoard = async () => {
-    if (!newBoardTitle.trim() || !projectId) return;
+    console.log('보드 생성 시작 - projectId:', projectId, 'title:', newBoardTitle);
+    
+    if (!newBoardTitle.trim()) {
+      alert('보드 제목을 입력해주세요.');
+      return;
+    }
+    
+    if (!projectId) {
+      alert('프로젝트 ID가 없습니다. 페이지를 새로고침해주세요.');
+      return;
+    }
 
     try {
       setCreating(true);
-      const response = await agileBoardApi.createAgileBoard({
+      const boardData = {
         projectId: Number(projectId),
         title: newBoardTitle,
-      });
+      };
+      console.log('보드 생성 요청 데이터:', boardData);
+      
+      const response = await agileBoardApi.createAgileBoard(boardData);
       console.log('보드 생성 응답:', response);
       
       // 생성된 보드를 즉시 목록에 추가
