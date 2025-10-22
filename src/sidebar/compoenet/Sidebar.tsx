@@ -106,7 +106,21 @@ const Sidebar: React.FC<SidebarProps> = ({
         working = eventData.isWorking !== undefined ? eventData.isWorking : false;
         setBaseSeconds(totalSeconds);
         setIsWorking(working);
-        setWorkStartTime(null);
+        
+        // 작업 중이면 현재 시간을 시작 시간으로 설정
+        if (working) {
+          const sessionStart = localStorage.getItem('sessionStartTime');
+          if (sessionStart) {
+            setWorkStartTime(new Date(sessionStart));
+            console.log('[Sidebar] 작업 시작 시간 설정:', sessionStart);
+          } else {
+            setWorkStartTime(new Date());
+            console.log('[Sidebar] 현재 시간을 작업 시작 시간으로 설정');
+          }
+        } else {
+          setWorkStartTime(null);
+          console.log('[Sidebar] 작업 중지 - 타이머 정지');
+        }
       } else {
         console.log('[Sidebar] 서버에서 데이터 조회');
         const data = await attendanceApi.getTodayTotalWorkTime();

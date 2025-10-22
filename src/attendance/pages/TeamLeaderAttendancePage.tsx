@@ -67,8 +67,15 @@ const TeamLeaderAttendancePage: React.FC = () => {
     console.log('서버에서 받은 누적 시간:', baseWorkHours, '→', initialTime);
     setCurrentWorkTime(initialTime);
     
-    // 서버에서 작업 중이라고 하면 세션 시작 시간 복원
-    if (todayAttendance.isWorking && todayAttendance.currentSessionStart) {
+    // localStorage에서 작업 상태 복원 (페이지 새로고침 대응)
+    const workingTeamId = localStorage.getItem('currentWorkingTeam');
+    const sessionStart = localStorage.getItem('sessionStartTime');
+    
+    if (workingTeamId && sessionStart && selectedTeam && workingTeamId === selectedTeam.toString()) {
+      console.log('localStorage에서 작업 상태 복원 - sessionStart:', sessionStart);
+      setSessionStartTime(new Date(sessionStart));
+    } else if (todayAttendance.isWorking && todayAttendance.currentSessionStart) {
+      // localStorage에 없으면 서버 데이터로 복원
       const today = new Date();
       const parts = todayAttendance.currentSessionStart.split(':');
       const sessionStart = new Date(
@@ -81,8 +88,12 @@ const TeamLeaderAttendancePage: React.FC = () => {
       );
       console.log('서버에서 세션 시작 시간 복원:', sessionStart);
       setSessionStartTime(sessionStart);
+      
+      // localStorage에도 저장
+      localStorage.setItem('currentWorkingTeam', selectedTeam?.toString() || '');
+      localStorage.setItem('sessionStartTime', sessionStart.toISOString());
     }
-  }, [todayAttendance]);
+  }, [todayAttendance, selectedTeam]);
   
   // 실시간 작업 시간 계산 (프론트엔드에서만 처리)
   useEffect(() => {
