@@ -458,10 +458,25 @@ const KanbanBoardPage = () => {
 
     try {
       setSaving(true);
-      await kanbanTicketApi.updateKanbanTicket(selectedTicket.id, updateData);
+      const response = await kanbanTicketApi.updateKanbanTicket(selectedTicket.id, updateData);
+      console.log('티켓 업데이트 응답:', response);
       
-      // 성공 후 보드 데이터 재조회
-      await loadBoardDetail();
+      // 티켓 목록에서 해당 티켓 업데이트
+      setTickets(prev => prev.map(ticket => 
+        ticket.id === selectedTicket.id 
+          ? {
+              ...ticket,
+              title: editedTitle,
+              description: editedDescription,
+              status: editedStatus,
+              priority: editedPriority,
+              domain: editedDomain,
+              updateDate: new Date().toISOString()
+            }
+          : ticket
+      ));
+      console.log('티켓 목록 업데이트 완료');
+      
       handleCloseDrawer();
     } catch (error: any) {
       console.error('티켓 저장 실패:', error);

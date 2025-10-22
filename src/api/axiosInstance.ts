@@ -6,6 +6,9 @@ const accountAxiosInstance = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
   },
 });
 
@@ -15,6 +18,9 @@ const agileAxiosInstance = axios.create({
   timeout: 120000, // AI 백로그 생성을 위해 120초로 증가
   headers: {
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
   },
 });
 
@@ -30,6 +36,15 @@ const setupRequestInterceptor = (instance: AxiosInstance, serviceName: string) =
       } else {
         console.warn(`[${serviceName}] ⚠️ 토큰이 없습니다!`);
       }
+      
+      // GET 요청에 타임스탬프 추가하여 캐시 무효화
+      if (config.method?.toLowerCase() === 'get') {
+        config.params = {
+          ...config.params,
+          _t: Date.now()
+        };
+      }
+      
       return config;
     },
     (error) => {

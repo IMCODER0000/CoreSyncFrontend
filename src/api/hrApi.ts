@@ -5,6 +5,9 @@ const hrAxiosInstance = axios.create({
   timeout: 120000, // 120초로 증가 (Redis 초기 연결 대기)
   headers: {
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
   },
 });
 
@@ -13,6 +16,9 @@ const accountAxiosInstance = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
   },
 });
 
@@ -27,6 +33,15 @@ hrAxiosInstance.interceptors.request.use(
     } else {
       console.warn('[HR API] ⚠️ 토큰이 없습니다!');
     }
+    
+    // GET 요청에 타임스탬프 추가하여 캐시 무효화
+    if (config.method?.toLowerCase() === 'get') {
+      config.params = {
+        ...config.params,
+        _t: Date.now()
+      };
+    }
+    
     return config;
   },
   (error) => {

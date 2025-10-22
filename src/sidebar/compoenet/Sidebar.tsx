@@ -236,17 +236,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       const response = await hrApi.createTeam({ name: teamName });
       console.log('팀 생성 응답:', response);
       
-      // 생성된 팀을 즉시 목록에 추가
-      const newTeam = {
-        id: response.id,
-        name: response.name,
-        projects: []
-      };
-      
-      setTeams(prev => [...prev, newTeam]);
-      console.log('팀 목록에 즉시 추가:', newTeam);
-      
       setIsCreateModalOpen(false);
+      
+      // 약간의 지연 후 전체 팀 목록 다시 조회 (서버 커밋 확실히 대기)
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await fetchTeams();
+      console.log('팀 목록 새로고침 완료');
     } catch (error: any) {
       console.error('팀 생성 실패:', error);
       const errorMessage = error.response?.data?.message || error.message || '팀 생성에 실패했습니다.';
