@@ -675,9 +675,6 @@ const AttendancePage: React.FC = () => {
                               localStorage.setItem('currentWorkingTeam', selectedTeam.toString());
                               localStorage.setItem('sessionStartTime', startTime.toISOString());
                               
-                              // Sidebar에 알림
-                              window.dispatchEvent(new Event('workStatusChanged'));
-                              
                               const result = await attendanceApi.checkIn(selectedTeam);
                               console.log('서버 응답:', result);
                               
@@ -694,6 +691,16 @@ const AttendancePage: React.FC = () => {
                               });
                               
                               await loadAttendanceList();
+                              
+                              // Sidebar에 작업 시작 알림 (누적 시간 포함)
+                              const totalSeconds = Math.floor(previousWorkHours * 3600);
+                              const event = new CustomEvent('workStatusChanged', {
+                                detail: {
+                                  totalSeconds: totalSeconds,
+                                  isWorking: true
+                                }
+                              });
+                              window.dispatchEvent(event);
                             } catch (error) {
                               console.error('일 시작 실패:', error);
                               setSessionStartTime(null); // 실패 시 타이머 정지
@@ -727,15 +734,21 @@ const AttendancePage: React.FC = () => {
                             localStorage.setItem('currentWorkingTeam', selectedTeam.toString());
                             localStorage.setItem('sessionStartTime', startTime.toISOString());
                             
-                            // Sidebar에 알림
-                            window.dispatchEvent(new Event('workStatusChanged'));
-                            
                             const result = await attendanceApi.checkIn(selectedTeam);
                             
                             // todayAttendance 설정
                             setTodayAttendance(result);
                             
                             await loadAttendanceList();
+                            
+                            // Sidebar에 작업 시작 알림
+                            const event = new CustomEvent('workStatusChanged', {
+                              detail: {
+                                totalSeconds: 0, // 첫 시작이므로 0
+                                isWorking: true
+                              }
+                            });
+                            window.dispatchEvent(event);
                           } catch (error) {
                             console.error('일 시작 실패:', error);
                             setSessionStartTime(null); // 실패 시 타이머 정지

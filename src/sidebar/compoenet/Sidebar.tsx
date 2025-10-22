@@ -168,8 +168,14 @@ const Sidebar: React.FC<SidebarProps> = ({
     // 총 작업 시간 로드
     loadTotalWorkTime();
     
-    // 10초마다 총 작업 시간 업데이트
-    const interval = setInterval(loadTotalWorkTime, 10000);
+    // 10초마다 총 작업 시간 업데이트 (작업 중일 때만)
+    const interval = setInterval(() => {
+      // 작업 중일 때만 서버에서 업데이트
+      const workingTeamId = localStorage.getItem('currentWorkingTeam');
+      if (workingTeamId) {
+        loadTotalWorkTime();
+      }
+    }, 10000);
     
     // 작업 상태 변경 이벤트 리스너
     const handleWorkStatusChange = (event: Event) => {
