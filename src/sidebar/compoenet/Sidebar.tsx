@@ -91,58 +91,45 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  // 총 작업 시간 로드
-  const loadTotalWorkTime = async (eventData?: { totalSeconds?: number; isWorking?: boolean }) => {
+  // 총 작업 시간 로드 (항상 서버에서 독립적으로 가져옴)
+  const loadTotalWorkTime = async (eventData?: { isWorking?: boolean }) => {
     try {
       console.log('[Sidebar] 총 작업 시간 로드 시작', eventData);
       
-      // 이벤트에서 데이터가 전달되면 그것을 사용, 아니면 서버에서 가져옴
-      let totalSeconds: number;
-      let working: boolean;
+      // 항상 서버에서 최신 데이터 조회 (독립적인 daily_work_time 엔티티)
+      console.log('[Sidebar] 서버에서 독립적인 총 작업 시간 조회');
+      const data = await attendanceApi.getTodayTotalWorkTime();
+      console.log('[Sidebar] 서버에서 받은 totalSeconds:', data.totalSeconds);
       
-      if (eventData && eventData.totalSeconds !== undefined) {
-        console.log('[Sidebar] 이벤트에서 받은 데이터 사용');
-        totalSeconds = eventData.totalSeconds;
-        working = eventData.isWorking !== undefined ? eventData.isWorking : false;
-        setBaseSeconds(totalSeconds);
-        setIsWorking(working);
+      setBaseSeconds(data.totalSeconds);
+      
+      // 작업 상태는 이벤트 또는 localStorage에서 확인
+      const workingTeamId = localStorage.getItem('currentWorkingTeam');
+      const sessionStart = localStorage.getItem('sessionStartTime');
+      
+      console.log('[Sidebar] localStorage - workingTeamId:', workingTeamId, 'sessionStart:', sessionStart);
+      
+      // 이벤트에서 작업 상태가 명시적으로 전달되면 그것을 우선 사용
+      if (eventData && eventData.isWorking !== undefined) {
+        console.log('[Sidebar] 이벤트에서 받은 작업 상태:', eventData.isWorking);
+        setIsWorking(eventData.isWorking);
         
-        // 작업 중이면 현재 시간을 시작 시간으로 설정
-        if (working) {
-          const sessionStart = localStorage.getItem('sessionStartTime');
-          if (sessionStart) {
-            setWorkStartTime(new Date(sessionStart));
-            console.log('[Sidebar] 작업 시작 시간 설정:', sessionStart);
-          } else {
-            setWorkStartTime(new Date());
-            console.log('[Sidebar] 현재 시간을 작업 시작 시간으로 설정');
-          }
+        if (eventData.isWorking && sessionStart) {
+          setWorkStartTime(new Date(sessionStart));
+          console.log('[Sidebar] 작업 시작 시간 설정:', sessionStart);
         } else {
           setWorkStartTime(null);
           console.log('[Sidebar] 작업 중지 - 타이머 정지');
         }
+      } else if (workingTeamId && sessionStart) {
+        // localStorage에서 작업 중 상태 확인
+        setIsWorking(true);
+        setWorkStartTime(new Date(sessionStart));
+        console.log('[Sidebar] 작업 중 상태로 설정');
       } else {
-        console.log('[Sidebar] 서버에서 데이터 조회');
-        const data = await attendanceApi.getTodayTotalWorkTime();
-        console.log('[Sidebar] 서버에서 받은 totalSeconds:', data.totalSeconds);
-        totalSeconds = data.totalSeconds;
-        setBaseSeconds(totalSeconds);
-        
-        // 현재 작업 중인지 확인 (localStorage에서)
-        const workingTeamId = localStorage.getItem('currentWorkingTeam');
-        const sessionStart = localStorage.getItem('sessionStartTime');
-        
-        console.log('[Sidebar] localStorage - workingTeamId:', workingTeamId, 'sessionStart:', sessionStart);
-        
-        if (workingTeamId && sessionStart) {
-          setIsWorking(true);
-          setWorkStartTime(new Date(sessionStart));
-          console.log('[Sidebar] 작업 중 상태로 설정');
-        } else {
-          setIsWorking(false);
-          setWorkStartTime(null);
-          console.log('[Sidebar] 작업 중지 상태로 설정');
-        }
+        setIsWorking(false);
+        setWorkStartTime(null);
+        console.log('[Sidebar] 작업 중지 상태로 설정');
       }
     } catch (error) {
       console.error('[Sidebar] 총 작업 시간 로드 실패:', error);

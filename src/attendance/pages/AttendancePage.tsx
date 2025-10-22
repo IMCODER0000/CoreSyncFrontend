@@ -629,13 +629,9 @@ const AttendancePage: React.FC = () => {
                               
                               await loadAttendanceList();
                               
-                              // Sidebar에 누적 시간 데이터와 함께 이벤트 발생
-                              const totalSeconds = Math.floor((result.workHours || 0) * 3600);
-                              console.log('Sidebar에 전달할 totalSeconds:', totalSeconds);
-                              
+                              // Sidebar에 작업 종료 알림 (사이드바가 독립적으로 서버에서 시간 조회)
                               const event = new CustomEvent('workStatusChanged', {
                                 detail: {
-                                  totalSeconds: totalSeconds,
                                   isWorking: false
                                 }
                               });
@@ -690,13 +686,11 @@ const AttendancePage: React.FC = () => {
                                 return updated;
                               });
                               
-                              await loadAttendanceList();
+                              localStorage.setItem('sessionStartTime', new Date().toISOString());
                               
-                              // Sidebar에 작업 시작 알림 (누적 시간 포함)
-                              const totalSeconds = Math.floor(previousWorkHours * 3600);
+                              // Sidebar에 작업 시작 알림 (사이드바가 독립적으로 서버에서 시간 조회)
                               const event = new CustomEvent('workStatusChanged', {
                                 detail: {
-                                  totalSeconds: totalSeconds,
                                   isWorking: true
                                 }
                               });
@@ -741,10 +735,9 @@ const AttendancePage: React.FC = () => {
                             
                             await loadAttendanceList();
                             
-                            // Sidebar에 작업 시작 알림
+                            // Sidebar에 작업 시작 알림 (사이드바가 독립적으로 서버에서 시간 조회)
                             const event = new CustomEvent('workStatusChanged', {
                               detail: {
-                                totalSeconds: 0, // 첫 시작이므로 0
                                 isWorking: true
                               }
                             });
