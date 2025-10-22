@@ -60,7 +60,10 @@ const ProjectDetailPage = () => {
       console.log('보드 생성 응답:', response);
       setOpenDialog(false);
       setNewBoardTitle('');
-      loadProjectDetail();
+      
+      // 약간의 지연 후 프로젝트 상세 다시 조회 (서버 커밋 대기)
+      await new Promise(resolve => setTimeout(resolve, 300));
+      await loadProjectDetail();
       
       // Sidebar에 보드 생성 알림
       window.dispatchEvent(new Event('boardCreated'));

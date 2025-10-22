@@ -92,22 +92,31 @@ const Sidebar: React.FC<SidebarProps> = ({
   // 총 작업 시간 로드
   const loadTotalWorkTime = async () => {
     try {
+      console.log('[Sidebar] 총 작업 시간 로드 시작');
       const data = await attendanceApi.getTodayTotalWorkTime();
+      console.log('[Sidebar] 서버에서 받은 totalSeconds:', data.totalSeconds);
       setBaseSeconds(data.totalSeconds);
       
       // 현재 작업 중인지 확인 (localStorage에서)
       const workingTeamId = localStorage.getItem('currentWorkingTeam');
       const sessionStart = localStorage.getItem('sessionStartTime');
       
+      console.log('[Sidebar] localStorage - workingTeamId:', workingTeamId, 'sessionStart:', sessionStart);
+      
       if (workingTeamId && sessionStart) {
         setIsWorking(true);
         setWorkStartTime(new Date(sessionStart));
+        console.log('[Sidebar] 작업 중 상태로 설정');
       } else {
         setIsWorking(false);
         setWorkStartTime(null);
+        console.log('[Sidebar] 작업 중지 상태로 설정');
       }
+      
+      // 작업 완료 후 이벤트 발생 (AttendancePage가 localStorage 정리할 수 있도록)
+      window.dispatchEvent(new Event('sidebarWorkTimeUpdated'));
     } catch (error) {
-      console.error('총 작업 시간 로드 실패:', error);
+      console.error('[Sidebar] 총 작업 시간 로드 실패:', error);
     }
   };
   
@@ -192,8 +201,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     try {
       setIsCreatingTeam(true);
       await teamApi.createTeam({ name: teamName });
-      // 팀 생성 성공 후 목록 재조회
+      
+      // 약간의 지연 후 팀 목록 재조회 (서버 커밋 대기)
+      await new Promise(resolve => setTimeout(resolve, 300));
       await fetchTeams();
+      
       setIsCreateModalOpen(false);
     } catch (error: any) {
       console.error('팀 생성 실패:', error);
