@@ -29,13 +29,30 @@ const GuestLoginPage: React.FC = () => {
         : { email: formData.email, loginCode: formData.loginCode, nickname: formData.nickname };
 
       const response = await axios.post(url, payload);
+      console.log('게스트 로그인 응답:', response.data);
+
+      // 응답 데이터 검증
+      if (!response.data) {
+        throw new Error('서버 응답이 올바르지 않습니다.');
+      }
+
+      const { userToken, accountId, nickname, email } = response.data;
+      console.log('추출된 데이터:', { userToken, accountId, nickname, email });
+
+      if (!userToken) {
+        throw new Error('토큰을 받지 못했습니다.');
+      }
+
+      if (accountId === undefined || accountId === null) {
+        throw new Error('계정 정보를 받지 못했습니다.');
+      }
 
       // 로그인 정보 저장
       localStorage.setItem('isLoggedIn', 'wxx-sdwsx-ds=!>,?');
-      localStorage.setItem('userToken', response.data.userToken);
-      localStorage.setItem('accountId', response.data.accountId.toString());
-      localStorage.setItem('nickname', response.data.nickname);
-      localStorage.setItem('email', response.data.email);
+      localStorage.setItem('userToken', userToken);
+      localStorage.setItem('accountId', accountId.toString());
+      localStorage.setItem('nickname', nickname || '');
+      localStorage.setItem('email', email || '');
 
       // 메인 페이지로 이동
       navigate('/');
