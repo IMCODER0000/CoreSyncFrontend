@@ -210,7 +210,7 @@ const TeamLeaderAttendancePage: React.FC = () => {
         members.map(async (member) => {
           try {
             const response = await axios.get(
-              `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/account-profile/${member.accountId}`,
+              `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/api/account-profile/${member.accountId}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -605,7 +605,11 @@ const TeamLeaderAttendancePage: React.FC = () => {
                                 localStorage.removeItem('currentWorkingTeam');
                                 localStorage.removeItem('sessionStartTime');
                                 
-                                window.dispatchEvent(new Event('workStatusChanged'));
+                                // 사이드바에 업데이트된 총 작업 시간 전달
+                                const totalSeconds = result.workHours ? Math.floor(result.workHours * 3600) : 0;
+                                window.dispatchEvent(new CustomEvent('workStatusChanged', { 
+                                  detail: { totalSeconds, isWorking: false } 
+                                }));
                                 
                                 if (result.workHours !== undefined && result.workHours !== null) {
                                   const hours = Math.floor(result.workHours);
@@ -651,10 +655,14 @@ const TeamLeaderAttendancePage: React.FC = () => {
                                 localStorage.setItem('currentWorkingTeam', selectedTeam.toString());
                                 localStorage.setItem('sessionStartTime', startTime.toISOString());
                                 
-                                window.dispatchEvent(new Event('workStatusChanged'));
-                                
                                 const result = await attendanceApi.checkIn(selectedTeam);
                                 console.log('서버 응답:', result);
+                                
+                                // 사이드바에 현재 누적 시간과 작업 중 상태 전달
+                                const totalSeconds = previousWorkHours * 3600;
+                                window.dispatchEvent(new CustomEvent('workStatusChanged', { 
+                                  detail: { totalSeconds, isWorking: true } 
+                                }));
                                 
                                 setTodayAttendance(prev => {
                                   const updated = prev ? { 
@@ -698,9 +706,12 @@ const TeamLeaderAttendancePage: React.FC = () => {
                               localStorage.setItem('currentWorkingTeam', selectedTeam.toString());
                               localStorage.setItem('sessionStartTime', startTime.toISOString());
                               
-                              window.dispatchEvent(new Event('workStatusChanged'));
-                              
                               const result = await attendanceApi.checkIn(selectedTeam);
+                              
+                              // 사이드바에 작업 시작 알림 (0초부터 시작)
+                              window.dispatchEvent(new CustomEvent('workStatusChanged', { 
+                                detail: { totalSeconds: 0, isWorking: true } 
+                              }));
                               
                               setTodayAttendance(result);
                               

@@ -180,9 +180,14 @@ const Sidebar: React.FC<SidebarProps> = ({
     
     // 작업 상태 변경 이벤트 리스너
     const handleWorkStatusChange = (event: Event) => {
-      console.log('[Sidebar] 작업 상태 변경 감지');
+      console.log('[Sidebar] workStatusChanged 이벤트 수신');
       const customEvent = event as CustomEvent;
-      loadTotalWorkTime(customEvent.detail);
+      if (customEvent.detail) {
+        console.log('[Sidebar] CustomEvent detail:', customEvent.detail);
+        loadTotalWorkTime(customEvent.detail);
+      } else {
+        loadTotalWorkTime();
+      }
     };
     
     // 팀/프로젝트 생성 이벤트 리스너
@@ -330,6 +335,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
+    <>
     <motion.div 
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
@@ -650,15 +656,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           </AnimatePresence>
         </Link>
       </motion.div>
-
-      {/* 팀 생성 모달 */}
-      <CreateTeamModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreateTeamSubmit}
-        isLoading={isCreatingTeam}
-      />
     </motion.div>
+
+    {/* 팀 생성 모달 - 사이드바 밖에 렌더링 */}
+    <CreateTeamModal
+      isOpen={isCreateModalOpen}
+      onClose={() => setIsCreateModalOpen(false)}
+      onSubmit={handleCreateTeamSubmit}
+      isLoading={isCreatingTeam}
+    />
+    </>
   );
 };
 
