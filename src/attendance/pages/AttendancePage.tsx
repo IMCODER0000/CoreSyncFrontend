@@ -606,13 +606,6 @@ const AttendancePage: React.FC = () => {
                               console.log('서버 응답:', result);
                               console.log('서버 workHours:', result.workHours);
                               
-                              // 서버 응답 후 localStorage 정리
-                              localStorage.removeItem('currentWorkingTeam');
-                              localStorage.removeItem('sessionStartTime');
-                              
-                              // Sidebar에 알림 (서버 업데이트 후)
-                              window.dispatchEvent(new Event('workStatusChanged'));
-                              
                               // 서버 응답의 workHours를 사용하여 표시 시간 업데이트
                               if (result.workHours !== undefined && result.workHours !== null) {
                                 const hours = Math.floor(result.workHours);
@@ -635,6 +628,15 @@ const AttendancePage: React.FC = () => {
                               });
                               
                               await loadAttendanceList();
+                              
+                              // localStorage 정리 (마지막에)
+                              localStorage.removeItem('currentWorkingTeam');
+                              localStorage.removeItem('sessionStartTime');
+                              
+                              // Sidebar에 알림 (모든 업데이트 완료 후, 약간의 지연)
+                              setTimeout(() => {
+                                window.dispatchEvent(new Event('workStatusChanged'));
+                              }, 100);
                             } catch (error) {
                               console.error('일 종료 실패:', error);
                               alert('일 종료에 실패했습니다.');
