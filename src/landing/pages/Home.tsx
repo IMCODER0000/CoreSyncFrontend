@@ -57,7 +57,7 @@ const Home = () => {
 
             <div className="container mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between max-w-7xl gap-16 lg:gap-24 relative z-10">
                 <motion.div
-                    className="w-full md:w-1/2 mb-16 md:mb-0"
+                    className="w-full md:w-1/2 mb-16 md:mb-0 mr-40"
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
@@ -65,7 +65,7 @@ const Home = () => {
                     <div className="relative group">
                         {/* 배경 장식 레이어들 */}
                         <motion.div
-                            className="absolute inset-0 bg-gradient-to-br from-indigo-300/40 to-purple-300/40 rounded-3xl transform rotate-6 scale-95 blur-sm"
+                            className="absolute inset-0 bg-gradient-to-br from-indigo-300/40 scale-150 to-purple-300/40 rounded-3xl transform rotate-6 scale-95 blur-sm"
                             animate={{
                                 rotate: [6, 8, 6],
                                 scale: [0.95, 0.97, 0.95]
@@ -77,7 +77,7 @@ const Home = () => {
                             }}
                         />
                         <motion.div 
-                            className="absolute inset-0 bg-gradient-to-br from-blue-300/30 to-indigo-300/30 rounded-3xl transform -rotate-3 scale-98 blur-sm"
+                            className="absolute inset-0 bg-gradient-to-br from-blue-300/30 to-indigo-300/30 rounded-3xl transform -rotate-3 scale-98 blur-sm scale-150"
                             animate={{
                                 rotate: [-3, -5, -3],
                                 scale: [0.98, 1, 0.98]
@@ -98,7 +98,7 @@ const Home = () => {
                             <img
                                 src={imsi1Image}
                                 alt="서비스 이미지"
-                                className="w-full h-auto rounded-2xl shadow-lg"
+                                className="w-full h-auto rounded-2xl shadow-lg scale-150"
                             />
                             
                             {/* 이미지 위 그라데이션 오버레이 */}
@@ -107,12 +107,12 @@ const Home = () => {
                         
                         {/* 플로팅 배지 */}
                         <motion.div
-                            className="absolute -top-4 -right-4 bg-gradient-to-br from-indigo-500 to-purple-500 text-white px-6 py-3 rounded-2xl shadow-xl font-bold text-sm"
+                            className="absolute -top-20 -right-40 bg-gradient-to-br from-indigo-500 to-purple-500 text-white px-8 py-3 rounded-2xl shadow-xl font-bold text-base"
                             initial={{ scale: 0, rotate: -45 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                            animate={{ scale: 1, rotate: 10 }}
+                            transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
                         >
-                            ✨ New
+                            CoreSync
                         </motion.div>
                     </div>
                 </motion.div>
@@ -137,7 +137,7 @@ const Home = () => {
                         >
                             C
                         </motion.div>
-                        <h1 className="text-5xl font-bold ml-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Core Syncc</h1>
+                        <h1 className="text-5xl font-bold ml-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Core Sync</h1>
                     </motion.div>
 
                     {/* 메인 타이틀 */}
@@ -147,11 +147,13 @@ const Home = () => {
                         transition={{ delay: 0.4 }}
                         className="mb-8 ml-20"
                     >
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-gray-800 leading-tight">
-                            IT관리의 마침표,<br />
-                            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Core Syncc</span>
-                        </h2>
-                        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-indigo-100/50 shadow-lg">
+                        <div className="text-center">
+                            <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-gray-800 leading-tight">
+                                IT관리의 마침표,<br />
+                                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Core Sync</span>
+                            </h2>
+                        </div>
+                        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border text-center border-indigo-100/50 shadow-lg">
                             <p className="text-gray-700 leading-relaxed text-lg font-medium">
                                 IT 일정과 효율적인 관리로<br />
                                 <span className="text-indigo-600 font-bold">작업률을 높이는</span> IT관리 서비스
