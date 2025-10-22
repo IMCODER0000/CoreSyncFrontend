@@ -60,9 +60,17 @@ const TeamDetailPage: React.FC = () => {
       const response = await teamApi.createTeamProject(Number(teamId), { title: projectName });
       console.log('프로젝트 생성 성공:', response);
       
+      // 생성된 프로젝트 ID 확인
+      const projectId = response.projectId || response.id;
+      if (!projectId) {
+        console.error('프로젝트 ID가 응답에 없습니다:', response);
+        alert('프로젝트가 생성되었지만 ID를 받지 못했습니다. 페이지를 새로고침해주세요.');
+        return;
+      }
+      
       // 생성된 프로젝트를 즉시 목록에 추가
       const newProject = {
-        id: response.projectId,
+        id: projectId,
         name: response.title,
       };
       

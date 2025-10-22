@@ -28,7 +28,8 @@ export interface CreateTeamProjectRequest {
 }
 
 export interface CreateTeamProjectResponse {
-  projectId: number;
+  id?: number;
+  projectId?: number;
   title: string;
   teamId: number;
   writerNickname: string;
