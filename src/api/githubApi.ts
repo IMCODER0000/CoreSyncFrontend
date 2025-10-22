@@ -31,6 +31,13 @@ export interface GithubCommit {
   url: string;
 }
 
+export interface GithubCommitsResponse {
+  commits: GithubCommit[];
+  page: number;
+  perPage: number;
+  hasMore: boolean;
+}
+
 export const githubApi = {
   // GitHub 저장소 목록 조회
   getRepositories: async (): Promise<GithubRepositoryListResponse> => {
@@ -44,9 +51,9 @@ export const githubApi = {
     return response.data;
   },
 
-  // GitHub 커밋 내역 조회 (공개 저장소)
-  getCommits: async (owner: string, repo: string, perPage: number = 10): Promise<GithubCommit[]> => {
-    const response = await agileAxiosInstance.get(`/api/github/commits/${owner}/${repo}?per_page=${perPage}`);
+  // GitHub 커밋 내역 조회 (페이지네이션 지원)
+  getCommits: async (owner: string, repo: string, page: number = 1): Promise<GithubCommitsResponse> => {
+    const response = await agileAxiosInstance.get(`/api/github/commits/${owner}/${repo}?page=${page}`);
     return response.data;
   },
 

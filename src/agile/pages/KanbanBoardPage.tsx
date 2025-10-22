@@ -60,6 +60,9 @@ const KanbanBoardPage = () => {
   const [commitSearchQuery, setCommitSearchQuery] = useState('');
   const [generatingBacklog, setGeneratingBacklog] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [currentCommitPage, setCurrentCommitPage] = useState(1);
+  const [hasMoreCommits, setHasMoreCommits] = useState(false);
+  const [loadingMoreCommits, setLoadingMoreCommits] = useState(false);
   
   // 댓글 관련 상태
   const [comments, setComments] = useState<TicketComment[]>([]);
@@ -220,13 +223,35 @@ const KanbanBoardPage = () => {
 
     try {
       setLoadingCommits(true);
-      const commits = await githubApi.getCommits(githubOwner, githubRepo, 10);
-      setGithubCommits(commits);
+      setCurrentCommitPage(1);
+      const response = await githubApi.getCommits(githubOwner, githubRepo, 1);
+      setGithubCommits(response.commits);
+      setHasMoreCommits(response.hasMore);
     } catch (error) {
       console.error('GitHub 커밋 조회 실패:', error);
       setGithubCommits([]);
+      setHasMoreCommits(false);
     } finally {
       setLoadingCommits(false);
+    }
+  };
+
+  const loadMoreCommits = async () => {
+    if (!githubOwner || !githubRepo || loadingMoreCommits) {
+      return;
+    }
+
+    try {
+      setLoadingMoreCommits(true);
+      const nextPage = currentCommitPage + 1;
+      const response = await githubApi.getCommits(githubOwner, githubRepo, nextPage);
+      setGithubCommits(prev => [...prev, ...response.commits]);
+      setCurrentCommitPage(nextPage);
+      setHasMoreCommits(response.hasMore);
+    } catch (error) {
+      console.error('추가 커밋 조회 실패:', error);
+    } finally {
+      setLoadingMoreCommits(false);
     }
   };
 
@@ -1402,31 +1427,68 @@ const KanbanBoardPage = () => {
                           검색 결과가 없습니다
                         </Typography>
                       ) : (
-                        <Box sx={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #e0e0e0', borderRadius: 1 }}>
-                          {filteredCommits.map((commit) => (
-                            <Box
-                              key={commit.sha}
-                              sx={{
-                                p: 2,
-                                borderBottom: '1px solid #f0f0f0',
-                                '&:hover': { bgcolor: '#f7f7f7' },
-                                cursor: 'pointer',
-                                '&:last-child': { borderBottom: 'none' }
-                              }}
-                              onClick={() => {
-                                setSelectedCommit(commit);
-                                setShowCommitSearch(false);
-                              }}
-                            >
-                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>
-                                {commit.message.split('\n')[0]}
-                              </Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                {commit.author.name} • {new Date(commit.author.date).toLocaleString('ko-KR')} • {commit.sha.substring(0, 7)}
-                              </Typography>
+                        <>
+                          <Box sx={{ maxHeight: 300, overflowY: 'auto', border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                            {filteredCommits.map((commit) => (
+                              <Box
+                                key={commit.sha}
+                                sx={{
+                                  p: 2,
+                                  borderBottom: '1px solid #f0f0f0',
+                                  '&:hover': { bgcolor: '#f7f7f7' },
+                                  cursor: 'pointer',
+                                  '&:last-child': { borderBottom: 'none' }
+                                }}
+                                onClick={() => {
+                                  setSelectedCommit(commit);
+                                  setShowCommitSearch(false);
+                                }}
+                              >
+                                <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>
+                                  {commit.message.split('\n')[0]}
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  {commit.author.name} • {new Date(commit.author.date).toLocaleString('ko-KR')} • {commit.sha.substring(0, 7)}
+                                </Typography>
+                              </Box>
+                            ))}
+                          </Box>
+                          
+                          {/* 더 가져오기 버튼 */}
+                          {hasMoreCommits && !commitSearchQuery && (
+                            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={loadMoreCommits}
+                                disabled={loadingMoreCommits}
+                                sx={{
+                                  borderRadius: 2,
+                                  textTransform: 'none',
+                                  fontWeight: 600,
+                                  px: 3,
+                                  borderColor: '#6366f1',
+                                  color: '#6366f1',
+                                  '&:hover': {
+                                    borderColor: '#4f46e5',
+                                    bgcolor: '#eef2ff'
+                                  }
+                                }}
+                              >
+                                {loadingMoreCommits ? (
+                                  <>
+                                    <CircularProgress size={16} sx={{ mr: 1 }} />
+                                    로딩 중...
+                                  </>
+                                ) : (
+                                  <>
+                                    더 가져오기 (10개)
+                                  </>
+                                )}
+                              </Button>
                             </Box>
-                          ))}
-                        </Box>
+                          )}
+                        </>
                       )}
                     </Box>
                   )}
