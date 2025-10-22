@@ -25,7 +25,6 @@ const setupRequestInterceptor = (instance: AxiosInstance) => {
       const token = localStorage.getItem('userToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        config.headers.AuthenticationHeader = `Bearer ${token}`;
       }
       return config;
     },

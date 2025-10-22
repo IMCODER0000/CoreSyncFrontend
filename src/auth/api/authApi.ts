@@ -16,7 +16,7 @@ export const checkAuthentication = async (): Promise<boolean> => {
       `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/authentication/authenticate`,
       {
         headers: {
-          'AuthenticationHeader': `Bearer ${userToken}`,
+          'Authorization': `Bearer ${userToken}`,
         },
         timeout: 5000,
       }
