@@ -358,30 +358,53 @@ const AttendancePage: React.FC = () => {
         <motion.div
           key={day}
           whileHover={{ scale: 1.05 }}
-          className={`p-2 min-h-[80px] border-2 rounded-lg cursor-pointer transition-all ${
+          className={`p-3 min-h-[100px] border-2 rounded-xl cursor-pointer transition-all relative overflow-hidden ${
             record ? getStatusColor(record.status) : 'bg-white border-gray-200'
-          } ${isToday ? 'ring-2 ring-blue-500' : ''}`}
+          } ${isToday ? 'ring-4 ring-indigo-400 shadow-lg' : ''}`}
           onClick={() => setSelectedDate(new Date(year, month, day))}
         >
-          <div className="flex justify-between items-start mb-1">
-            <span className={`text-sm font-semibold ${isToday ? 'text-blue-600' : 'text-gray-700'}`}>
-              {day}
-            </span>
-            {record && getStatusIcon(record.status)}
-          </div>
-          {record && record.checkIn && (
-            <div className="text-xs text-gray-600 space-y-0.5">
-              <div className="flex items-center gap-1">
-                <span>🕐</span>
-                <span>{record.checkIn}</span>
-              </div>
-              {record.workHours && (
-                <div className="text-xs font-medium text-gray-700">
-                  {record.workHours}h
-                </div>
-              )}
-            </div>
+          {/* 오늘 날짜 배경 그라데이션 */}
+          {isToday && (
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 pointer-events-none" />
           )}
+          
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-2">
+              <span className={`text-sm font-bold ${isToday ? 'text-indigo-600' : 'text-gray-700'}`}>
+                {day}
+              </span>
+              {record && getStatusIcon(record.status)}
+            </div>
+            
+            {record && record.checkIn && (
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                  <span className="text-sm">🕐</span>
+                  <span className="font-medium">{record.checkIn}</span>
+                </div>
+                
+                {record.workHours && (
+                  <div className={`mt-2 px-2.5 py-1.5 rounded-lg text-center ${
+                    isToday 
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md' 
+                      : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    <div className="flex items-center justify-center gap-1">
+                      {isToday && <span className="text-xs">⏱️</span>}
+                      <span className={`font-bold ${isToday ? 'text-sm' : 'text-xs'}`}>
+                        {(() => {
+                          const hours = Math.floor(record.workHours);
+                          const minutes = Math.floor((record.workHours % 1) * 60);
+                          const seconds = Math.round(((record.workHours % 1) * 60 % 1) * 60);
+                          return `${hours}h ${minutes}m ${seconds}s`;
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </motion.div>
       );
     }
