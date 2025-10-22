@@ -420,8 +420,8 @@ const KanbanBoardPage = () => {
       
       // 기존 description에 AI 생성 백로그 추가
       const newDescription = editedDescription 
-        ? `${editedDescription}\n\n---\n\n## 🤖 AI 생성 백로그\n\n${backlog}`
-        : `## 🤖 AI 생성 백로그\n\n${backlog}`;
+        ? `${editedDescription}\n\n---\n\n${backlog}`
+        : backlog;
       
       setEditedDescription(newDescription);
       
