@@ -47,33 +47,42 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   // 팀 목록 조회
   const fetchTeams = async () => {
+    console.log('[Sidebar] 팀 목록 조회 시작');
     try {
       setIsLoadingTeams(true);
+      console.log('[Sidebar] teamApi.getTeamList() 호출');
       const response = await teamApi.getTeamList();
+      console.log('[Sidebar] 팀 목록 응답:', response);
+      console.log('[Sidebar] response.teams:', response.teams);
       
       // 각 팀의 프로젝트 목록도 함께 조회
       const teamsWithProjects = await Promise.all(
         response.teams.map(async (team) => {
+          console.log(`[Sidebar] 팀 ${team.id}의 프로젝트 조회 시작`);
           try {
             const projectsResponse = await projectApi.getTeamProjects(team.id);
             const projects = projectsResponse.projectList.map((p: any) => ({
               id: p.id,
               name: p.title,
             }));
+            console.log(`[Sidebar] 팀 ${team.id}의 프로젝트:`, projects);
             return { ...team, projects };
           } catch (error) {
-            console.error(`팀 ${team.id}의 프로젝트 조회 실패:`, error);
+            console.error(`[Sidebar] 팀 ${team.id}의 프로젝트 조회 실패:`, error);
             return team;
           }
         })
       );
       
+      console.log('[Sidebar] 최종 팀 목록:', teamsWithProjects);
       setTeams(teamsWithProjects);
     } catch (error) {
-      console.error('팀 목록 조회 실패:', error);
+      console.error('[Sidebar] 팀 목록 조회 실패:', error);
+      console.error('[Sidebar] 에러 상세:', error);
       setTeams([]);
     } finally {
       setIsLoadingTeams(false);
+      console.log('[Sidebar] 팀 목록 조회 완료');
     }
   };
 

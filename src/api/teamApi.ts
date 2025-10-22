@@ -37,13 +37,19 @@ export interface CreateTeamProjectResponse {
 export const teamApi = {
   // 팀 목록 조회 (hr_service)
   getTeamList: async (): Promise<TeamListResponse> => {
+    console.log('[teamApi] getTeamList 호출');
     const hrTeams = await hrApi.getTeamList();
+    console.log('[teamApi] hrApi.getTeamList 응답:', hrTeams);
+    console.log('[teamApi] hrTeams 타입:', typeof hrTeams);
+    console.log('[teamApi] hrTeams 길이:', Array.isArray(hrTeams) ? hrTeams.length : 'not array');
+    
     // hr_service의 TeamResponse를 Team 타입으로 변환
     const teams: Team[] = hrTeams.map(hrTeam => ({
       id: hrTeam.id,
       name: hrTeam.name,
       projects: [] // hr_service에는 projects 정보가 없으므로 빈 배열
     }));
+    console.log('[teamApi] 변환된 teams:', teams);
     return { teams };
   },
 

@@ -77,8 +77,20 @@ export interface TeamMemberResponse {
 export const hrApi = {
   // 팀 목록 조회
   getTeamList: async (): Promise<TeamResponse[]> => {
-    const response = await hrAxiosInstance.get('/api/team/list');
-    return response.data;
+    console.log('[팀 리스트 조회] 시작');
+    console.log('[팀 리스트 조회] 토큰:', localStorage.getItem('userToken'));
+    
+    try {
+      const response = await hrAxiosInstance.get('/api/team/list');
+      console.log('[팀 리스트 조회] 성공:', response.data);
+      console.log('[팀 리스트 조회] 팀 개수:', response.data?.length || 0);
+      return response.data;
+    } catch (error: any) {
+      console.error('[팀 리스트 조회] 실패:', error);
+      console.error('[팀 리스트 조회] 에러 응답:', error.response?.data);
+      console.error('[팀 리스트 조회] 에러 상태:', error.response?.status);
+      throw error;
+    }
   },
 
   // 팀 생성
