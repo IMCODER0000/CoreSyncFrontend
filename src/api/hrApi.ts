@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const hrAxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_HR_API_URL || 'http://localhost:8003',
-  timeout: 10000,
+  timeout: 120000, // 120초로 증가 (Redis 초기 연결 대기)
   headers: {
     'Content-Type': 'application/json',
   },
@@ -20,8 +20,14 @@ const accountAxiosInstance = axios.create({
 hrAxiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('userToken');
+    console.log('[HR API] 요청 URL:', config.url);
+    console.log('[HR API] 토큰 존재 여부:', !!token);
+    console.log('[HR API] 토큰 값:', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('[HR API] Authorization 헤더 설정됨:', config.headers.Authorization);
+    } else {
+      console.warn('[HR API] 토큰이 없어서 Authorization 헤더를 설정하지 않음');
     }
     return config;
   },
