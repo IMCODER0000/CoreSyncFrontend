@@ -58,7 +58,7 @@ export const dashboardApi = {
   getStats: async (): Promise<DashboardStats> => {
     try {
       // 먼저 팀 정보를 가져옴 (HR Service에서)
-      const teamStatsResponse = await accountAxiosInstance.get('/account/dashboard/team-stats');
+      const teamStatsResponse = await accountAxiosInstance.get('/dashboard/team-stats');
       console.log('팀 통계 응답:', teamStatsResponse.data);
       
       // 병렬로 나머지 데이터 조회 (실패해도 계속 진행)

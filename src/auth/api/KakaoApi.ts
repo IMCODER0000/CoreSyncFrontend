@@ -11,7 +11,7 @@ export const useKakaoLogin = () => {
                 baseURL: import.meta.env.VITE_SPRING_API,
                 withCredentials: true,
             });
-            const res = await springAxiosInstance.get("/account/authentication/kakao/link");
+            const res = await springAxiosInstance.get("/authentication/kakao/link");
             if (!res.data) throw new Error("응답에 URL이 없습니다.");
 
 
@@ -90,7 +90,7 @@ export const useKakaoLogin = () => {
             console.log(userInfo);
 
             const res = await springAxiosInstance.post(
-                "/account/register",
+                "/register",
                 userInfo,
                 {
                     headers: {

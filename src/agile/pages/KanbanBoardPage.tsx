@@ -130,7 +130,7 @@ const KanbanBoardPage = () => {
                 members.map(async (member) => {
                   try {
                     const response = await axios.get(
-                      `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/account/account-profile/${member.accountId}`,
+                      `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/account-profile/${member.accountId}`,
                       {
                         headers: {
                           Authorization: `Bearer ${token}`,
