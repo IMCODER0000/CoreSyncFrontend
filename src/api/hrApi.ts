@@ -137,7 +137,7 @@ export const hrApi = {
 
   // 사용자 닉네임 조회 (account_service)
   getNickname: async (accountId: number): Promise<string> => {
-    const response = await accountAxiosInstance.get(`/api/account/${accountId}/nickname`);
+    const response = await accountAxiosInstance.get(`/account/account-profile/${accountId}`);
     return response.data.nickname || response.data;
   },
 };

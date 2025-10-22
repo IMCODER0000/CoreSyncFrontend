@@ -13,7 +13,7 @@ export const checkAuthentication = async (): Promise<boolean> => {
     }
 
     const response = await axios.get(
-      `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/authentication/authenticate`,
+      `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/account/authentication/authenticate`,
       {
         headers: {
           'AuthenticationHeader': `Bearer ${userToken}`,
@@ -42,7 +42,7 @@ export const logout = async (): Promise<boolean> => {
     }
 
     const response = await axios.post(
-      `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/authentication/logout`,
+      `${import.meta.env.VITE_ACCOUNT_API_URL || 'http://localhost:8001'}/account/authentication/logout`,
       {},
       {
         headers: {
