@@ -118,7 +118,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../../common_ui';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useKakaoLogin } from "../api/KakaoApi";
 
 interface TermsPageProps {
@@ -128,13 +128,37 @@ interface TermsPageProps {
 
 const TermsPage: React.FC<TermsPageProps> = ({ onAccept, onDecline }) => {
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const provider = location.state?.provider || 'kakao';
+  const location = useLocation();
   const fromRouter = !onAccept || !onDecline;
   const { requestRegister } = useKakaoLogin();
+  const isGuestSignup = (location.state as any)?.isGuestSignup || false;
 
   const handleAccept = async () => {
-    if (fromRouter) {
+    if (isGuestSignup) {
+      // 게스트 회원가입: 약관 동의 후 바로 로그인 처리
+      const guestUserToken = sessionStorage.getItem('guestUserToken');
+      const guestAccountId = sessionStorage.getItem('guestAccountId');
+      const guestNickname = sessionStorage.getItem('guestNickname');
+      const guestEmail = sessionStorage.getItem('guestEmail');
+
+      if (guestUserToken && guestAccountId) {
+        localStorage.setItem('isLoggedIn', 'wxx-sdwsx-ds=!>,?');
+        localStorage.setItem('userToken', guestUserToken);
+        localStorage.setItem('accountId', guestAccountId);
+        localStorage.setItem('nickname', guestNickname || '');
+        localStorage.setItem('email', guestEmail || '');
+
+        // 세션 스토리지 정리
+        sessionStorage.removeItem('guestUserToken');
+        sessionStorage.removeItem('guestAccountId');
+        sessionStorage.removeItem('guestNickname');
+        sessionStorage.removeItem('guestEmail');
+
+        // 메인 페이지로 이동
+        navigate('/');
+        window.location.reload();
+      }
+    } else if (fromRouter) {
       try {
         await requestRegister(); // [CHANGED] KakaoApi.ts에서 temp/login 분기 처리
       } catch {}
@@ -144,7 +168,14 @@ const TermsPage: React.FC<TermsPageProps> = ({ onAccept, onDecline }) => {
   };
 
   const handleDecline = () => {
-    if (fromRouter) {
+    if (isGuestSignup) {
+      // 게스트 회원가입 거절: 세션 스토리지 정리 후 게스트 로그인 페이지로 이동
+      sessionStorage.removeItem('guestUserToken');
+      sessionStorage.removeItem('guestAccountId');
+      sessionStorage.removeItem('guestNickname');
+      sessionStorage.removeItem('guestEmail');
+      navigate('/guest/login');
+    } else if (fromRouter) {
       navigate('/');
     } else if (onDecline) {
       onDecline();

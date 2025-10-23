@@ -47,16 +47,25 @@ const GuestLoginPage: React.FC = () => {
         throw new Error('계정 정보를 받지 못했습니다.');
       }
 
-      // 로그인 정보 저장
-      localStorage.setItem('isLoggedIn', 'wxx-sdwsx-ds=!>,?');
-      localStorage.setItem('userToken', userToken);
-      localStorage.setItem('accountId', accountId.toString());
-      localStorage.setItem('nickname', nickname || '');
-      localStorage.setItem('email', email || '');
+      if (isLogin) {
+        // 로그인: 바로 로그인 처리
+        localStorage.setItem('isLoggedIn', 'wxx-sdwsx-ds=!>,?');
+        localStorage.setItem('userToken', userToken);
+        localStorage.setItem('accountId', accountId.toString());
+        localStorage.setItem('nickname', nickname || '');
+        localStorage.setItem('email', email || '');
 
-      // 메인 페이지로 이동
-      navigate('/');
-      window.location.reload();
+        // 메인 페이지로 이동
+        navigate('/');
+        window.location.reload();
+      } else {
+        // 회원가입: 약관 페이지로 이동
+        sessionStorage.setItem('guestUserToken', userToken);
+        sessionStorage.setItem('guestAccountId', accountId.toString());
+        sessionStorage.setItem('guestNickname', nickname || '');
+        sessionStorage.setItem('guestEmail', email || '');
+        navigate('/auth/terms', { state: { isGuestSignup: true } });
+      }
     } catch (err: any) {
       console.error('게스트 로그인/회원가입 실패:', err);
       setError(err.response?.data?.message || err.message || '로그인에 실패했습니다.');
